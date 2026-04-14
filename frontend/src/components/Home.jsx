@@ -1,5 +1,6 @@
 import React from "react";
 import Hero from "./Hero";
+import LogoCarousel from "./contents";
 import { Home as HomeIcon, Info, Phone, User } from "lucide-react";
 
 export default function Home() {
@@ -14,7 +15,7 @@ export default function Home() {
               alt="G-Tech Logo"
               className="h-20 w-auto object-contain"
             />
-            <span className="text-2xl font-bold tracking-tight text-white mt-1">
+            <span className="text-2xl font-light tracking-tight text-white mt-1">
               Nagercoil
             </span>
           </div>
@@ -52,6 +53,7 @@ export default function Home() {
       </header>
 
       <Hero />
+      
     </>
   );
 }
