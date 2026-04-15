@@ -31,6 +31,7 @@ const logos = [
   { name: "Python", src: "/python.png" },
   { name: "Java", src: "/java.png" },
   { name: "React", src: "/reactjs.svg" },
+  {name: "MongoDb", src: "/mdb.png"},
   { name: "Node.js", src: "/nodejs.png" },
   { name: "PowerPoint", src: "/ppt.png" },
   { name: "Word", src: "/word.png" },
@@ -91,7 +92,8 @@ const duplicatedLogos = [...logos, ...logos];
       <motion.div
         variants={containerVariants}
         initial="hidden"
-        animate="visible"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.1 }}
         className="max-w-4xl text-center">
 
         {/* Badge */}
@@ -137,8 +139,9 @@ const duplicatedLogos = [...logos, ...logos];
 
       <motion.div
         initial={{ opacity: 0, y: 100 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8, duration: 1, ease: "easeOut" }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.1 }}
+        transition={{ delay: 0.2, duration: 1, ease: "easeOut" }}
         className="mt-20 w-full max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 px-4"
       >
         <div className="relative flex-1 rounded-[2.5rem] bg-white shadow-2xl overflow-hidden aspect-video border border-gray-100 flex">
@@ -156,7 +159,7 @@ const duplicatedLogos = [...logos, ...logos];
             
             <div className="absolute top-0 left-0 right-0 h-14 bg-white/90 backdrop-blur-md z-20 flex items-center justify-between px-6 border-b border-gray-100">
               <span className="text-xs font-semibold text-gray-500">
-                Agency / <span className="text-gray-900">Profile</span>
+                Institution / <span className="text-gray-900">Profile</span>
               </span>
               <div className="flex gap-2">
                 <div className="w-7 h-7 rounded-full bg-green-200 border-2 border-white shadow-sm flex items-center justify-center text-[10px] font-bold">
@@ -199,7 +202,7 @@ const duplicatedLogos = [...logos, ...logos];
           
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
-            <span className="font-bold text-xl text-gray-900 tracking-tight">G-Tec</span>
+            <span className="font-bold text-xl text-gray-900 tracking-tight">G-Tec Nagercoil Branch</span>
             <Menu className="text-gray-900 w-6 h-6" strokeWidth={2.5} />
           </div>
 
@@ -237,7 +240,7 @@ const duplicatedLogos = [...logos, ...logos];
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-50px" }}
+        viewport={{ once: false, amount: 0.1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="mt-24 mb-8 w-full max-w-7xl mx-auto overflow-hidden relative mask-[linear-gradient(to_right,transparent,black_15%,black_85%,transparent)]"
         onMouseEnter={() => setIsHovered(true)}

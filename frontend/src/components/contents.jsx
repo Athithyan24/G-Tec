@@ -3,6 +3,7 @@ import {
   motion,
 } from "framer-motion";
 import { Code2, GraduationCap, Palette, ArrowRight } from "lucide-react";
+import SpecialAccounting from "./SpecialAccounting";
 
 const categories = [
   {
@@ -30,7 +31,7 @@ const categories = [
     icon: Palette,
     color: "text-pink-600",
     bgColor: "bg-pink-100",
-    image:"/acc.jpg"
+    image:"/des.jpg"
   },
 ];
 
@@ -57,13 +58,13 @@ const LogoCarousel = () => {
   
 
   return (
-      
-      <section className="w-full bg-white py-20 px-6 md:px-12">
+      <>
+      <section className="w-full bg-white py-20 pb-10 px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
+            viewport={{ once: false, amount: 0.2 }} 
             transition={{ duration: 0.6 }}
             className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight mb-4">
@@ -82,7 +83,7 @@ const LogoCarousel = () => {
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: false, amount: 0.1 }}
             className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {categories.map((category, index) => (
               <motion.div
@@ -115,6 +116,8 @@ const LogoCarousel = () => {
           </motion.div>
         </div>
       </section>
+      <SpecialAccounting />
+      </>
   );
 };
 

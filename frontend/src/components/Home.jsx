@@ -1,12 +1,35 @@
 import React from "react";
 import Hero from "./Hero";
-import LogoCarousel from "./contents";
+import {useState, useEffect} from 'react';
 import { Home as HomeIcon, Info, Phone, User } from "lucide-react";
 
 export default function Home() {
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
   return (
     <>
-      <header className="sticky top-0 z-50 bg-stone-500/70 backdrop-blur-md border-b border-gray-100 transition-all">
+      <header 
+        className={`fixed w-full top-0 z-50 bg-stone-500/70 backdrop-blur-md border-b border-gray-100 transition-all duration-500 ease-in-out ${
+          isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           {/* Logo Section */}
           <div className="flex items-center gap-4 cursor-pointer">
