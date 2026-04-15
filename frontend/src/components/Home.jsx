@@ -1,6 +1,6 @@
 import React from "react";
 import Hero from "./Hero";
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from "react";
 import { Home as HomeIcon, Info, Phone, User } from "lucide-react";
 
 export default function Home() {
@@ -10,13 +10,13 @@ export default function Home() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      
+
       if (currentScrollY > lastScrollY && currentScrollY > 50) {
         setIsVisible(false);
       } else {
         setIsVisible(true);
       }
-      
+
       setLastScrollY(currentScrollY);
     };
 
@@ -25,9 +25,11 @@ export default function Home() {
   }, [lastScrollY]);
   return (
     <>
-      <header 
+      <header
         className={`fixed w-full top-0 z-50 bg-stone-500/70 backdrop-blur-md border-b border-gray-100 transition-all duration-500 ease-in-out ${
-          isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+          isVisible
+            ? "translate-y-0 opacity-100"
+            : "-translate-y-full opacity-0"
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
@@ -47,19 +49,22 @@ export default function Home() {
           <nav className="hidden md:flex items-center space-x-8">
             <a
               href="#home"
-              className="flex items-center gap-2 text-sm font-medium text-white hover:text-purple-600 transition-colors">
+              className="flex items-center gap-2 text-sm font-medium text-white hover:text-purple-600 transition-colors"
+            >
               <HomeIcon size={16} />
               Home
             </a>
             <a
               href="#about"
-              className="flex items-center gap-2 text-sm font-medium text-white hover:text-purple-600 transition-colors">
+              className="flex items-center gap-2 text-sm font-medium text-white hover:text-purple-600 transition-colors"
+            >
               <Info size={16} />
               About Us
             </a>
             <a
               href="#contact"
-              className="flex items-center gap-2 text-sm font-medium text-white hover:text-purple-600 transition-colors">
+              className="flex items-center gap-2 text-sm font-medium text-white hover:text-purple-600 transition-colors"
+            >
               <Phone size={16} />
               Contact Us
             </a>
@@ -76,7 +81,6 @@ export default function Home() {
       </header>
 
       <Hero />
-      
     </>
   );
 }

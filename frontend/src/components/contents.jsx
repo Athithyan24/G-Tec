@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import {
-  motion,
-} from "framer-motion";
+import { motion } from "framer-motion";
 import { Code2, GraduationCap, Palette, ArrowRight } from "lucide-react";
 import SpecialAccounting from "./SpecialAccounting";
 
@@ -13,7 +11,7 @@ const categories = [
     icon: Code2,
     color: "text-blue-600",
     bgColor: "bg-blue-100",
-    image:"/tech.jpg"
+    image: "/tech.jpg",
   },
   {
     title: "Non-Technical",
@@ -22,7 +20,7 @@ const categories = [
     icon: GraduationCap,
     color: "text-violet-600",
     bgColor: "bg-violet-100",
-    image:"/non-tech.jpg"
+    image: "/non-tech.jpg",
   },
   {
     title: "Designing",
@@ -31,7 +29,7 @@ const categories = [
     icon: Palette,
     color: "text-pink-600",
     bgColor: "bg-pink-100",
-    image:"/des.jpg"
+    image: "/des.jpg",
   },
 ];
 
@@ -53,20 +51,18 @@ const cardVariants = {
   },
 };
 
-
 const LogoCarousel = () => {
-  
-
   return (
-      <>
+    <>
       <section className="w-full bg-white py-20 pb-10 px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.2 }} 
+            viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16">
+            className="text-center mb-16"
+          >
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight mb-4">
               Explore our{" "}
               <span className="text-transparent bg-clip-text bg-linear-to-r from-violet-600 to-blue-500">
@@ -84,15 +80,18 @@ const LogoCarousel = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: false, amount: 0.1 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          >
             {categories.map((category, index) => (
               <motion.div
                 key={index}
                 variants={cardVariants}
                 whileHover={{ y: -10 }}
-                className="group p-8 rounded-3xl bg-gray-50 border border-gray-100 hover:bg-white hover:shadow-2xl hover:shadow-violet-200/50 transition-all duration-300">
+                className="group p-8 rounded-3xl bg-gray-50 border border-gray-100 hover:bg-white hover:shadow-2xl hover:shadow-violet-200/50 transition-all duration-300"
+              >
                 <div
-                  className={`w-14 h-14 ${category.bgColor} ${category.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                  className={`w-14 h-14 ${category.bgColor} ${category.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                >
                   <category.icon size={28} />
                 </div>
 
@@ -104,7 +103,7 @@ const LogoCarousel = () => {
                 </p>
 
                 <div>
-                  <img src={category.image} className="rounded"/>
+                  <img src={category.image} className="rounded" />
                 </div>
 
                 <div className="flex items-center text-gray-900 font-semibold cursor-pointer group/link">
@@ -117,7 +116,7 @@ const LogoCarousel = () => {
         </div>
       </section>
       <SpecialAccounting />
-      </>
+    </>
   );
 };
 
