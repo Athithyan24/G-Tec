@@ -135,7 +135,7 @@ export default function PricingSection() {
                 <span className="text-4xl font-extrabold tracking-tight mr-1">$</span>
                 
                 {/* AnimatePresence allows us to animate numbers entering and exiting */}
-                <div className="overflow-hidden h-[3rem] relative w-16">
+                <div className="overflow-hidden h-12 relative w-16">
                   <AnimatePresence mode="popLayout">
                     <motion.span
                       key={isMonthly ? "monthly" : "annual"}
