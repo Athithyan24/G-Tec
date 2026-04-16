@@ -1,10 +1,9 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import ScrollTypography from './ScrollAnime'
 
-// 1. & 3. Icons mapped with exact spacing (Rows at y=15% and y=35%)
 const stackIcons = [
-  // Top Row (MERN)
   {
     id: "mongo1",
     x: 10,
@@ -42,7 +41,6 @@ const stackIcons = [
     delay: 0.3,
   },
 
-  // Middle Row (MEAN)
   {
     id: "mongo2",
     x: 10,
@@ -81,40 +79,32 @@ const stackIcons = [
   },
 ];
 
-// The 4 columns where the flow branches will start
 const flowColumns = [15, 38.3, 61.6, 85];
 
-// 4. Double Space & 5. Trunk Merge Coordinates
 const START_Y = 55;
 const MERGE_Y = 85;
 const TRUNK_END_Y = 90;
 
-// 7. Vite Target Coordinates (Floating below the trunk)
 const VITE_X = 43;
 const VITE_Y = 85;
 
 const generateFlowBranches = () => {
   return flowColumns.map((startX, index) => {
     const d = `M ${startX} ${START_Y} C ${startX} 80, 50 55, 50 ${MERGE_Y} L 50 ${TRUNK_END_Y}`;
-    return { id: `branch-${index}`, d, delay: 0 }; // Delay 0 for simultaneous flow
+    return { id: `branch-${index}`, d, delay: 0 }; 
   });
 };
 
 const WebDevSpecial = () => {
   const branches = generateFlowBranches();
 
-  // Create a reference to track the scroll position of this section
   const sectionRef = useRef(null);
 
-  // Track the scroll progress of the section within the viewport
-  // 0 = section enters bottom of screen, 1 = section leaves top of screen
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"],
   });
 
-  // LEFT PANEL SCRUBBING:
-  // Starts off-screen left (-300px), stops at center (0px), then leaves left (-300px)
   const leftX = useTransform(
     scrollYProgress,
     [0, 0.35, 0.65, 1],
@@ -126,8 +116,6 @@ const WebDevSpecial = () => {
     [0, 1, 1, 0],
   );
 
-  // RIGHT PANEL SCRUBBING:
-  // Starts off-screen right (300px), stops at center (0px), then leaves right (300px)
   const rightX = useTransform(
     scrollYProgress,
     [0, 0.35, 0.65, 1],
@@ -140,18 +128,18 @@ const WebDevSpecial = () => {
   );
 
   return (
+    <>
     <section
       ref={sectionRef}
       className="w-full bg-white py-10 px-6 md:px-12 overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.1fr,0.9fr] gap-12 lg:gap-16 items-center">
+      <div className="max-w-8xl md:mx-35 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.1fr,0.9fr] gap-12 lg:gap-16 items-center">
         {/* ================= LEFT SIDE: INTERACTIVE GRAPHIC ================= */}
-        {/* MODIFIED: Tied directly to scroll using the useTransform values */}
         <motion.div
           style={{ x: leftX, opacity: leftOpacity }}
           className="w-full bg-gray-100 rounded-[2.5rem] p-4 md:p-3 relative overflow-hidden shadow-sm border border-gray-100 "
         >
-          <div className="relative w-full aspect-square md:aspect-4/4 rounded-4xl mb-15">
+          <div className="relative w-full aspect-square  md:aspect-7/6 rounded-4xl mb-15">
             <svg
               viewBox="0 0 100 100"
               preserveAspectRatio="none"
@@ -165,9 +153,9 @@ const WebDevSpecial = () => {
                   x2="0%"
                   y2="100%"
                 >
-                  <stop offset="0%" stopColor="#8b5cf6" />
-                  <stop offset="50%" stopColor="#6366f1" />
-                  <stop offset="100%" stopColor="#8b5cf6" />
+                  <stop offset="0%" stopColor="#9b9efa" />
+                  <stop offset="50%" stopColor="#6065fc" />
+                  <stop offset="100%" stopColor="#050dfc" />
                 </linearGradient>
               </defs>
 
@@ -204,7 +192,6 @@ const WebDevSpecial = () => {
               ))}
             </svg>
 
-            {/* HTML ICONS */}
             {stackIcons.map((item) => (
               <motion.div
                 key={item.id}
@@ -216,7 +203,7 @@ const WebDevSpecial = () => {
                   delay: item.delay,
                   type: "spring",
                 }}
-                className={`absolute w-12 hover:shadow-purple-400 hover:scale-110 transition duration-200 ease-in-out h-12 md:w-15 md:h-15 rounded-2xl rotate-45 ${item.bg} md:shadow-2xl flex items-center justify-center z-10 overflow-hidden p-2`}
+                className={`absolute w-12 hover:shadow-blue-400 hover:shadow-xl hover:scale-110 transition duration-200 ease-in-out h-12 md:w-15 md:h-15 rounded-2xl rotate-45 ${item.bg} md:shadow-2xl flex items-center justify-center z-10 overflow-hidden p-2`}
                 style={{
                   top: `${item.y}%`,
                   left: `${item.x}%`,
@@ -232,7 +219,6 @@ const WebDevSpecial = () => {
               </motion.div>
             ))}
 
-            {/* Bottom Target Icon (Vite) */}
             <motion.div
               initial={{ opacity: 0, scale: 0.5 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -266,12 +252,11 @@ const WebDevSpecial = () => {
         </motion.div>
 
         {/* ================= RIGHT SIDE: TEXT CONTENT ================= */}
-        {/* MODIFIED: Tied directly to scroll using the useTransform values */}
         <motion.div
           style={{ x: rightX, opacity: rightOpacity }}
           className="flex flex-col items-start ml-20"
         >
-          <span className="text-sm font-bold tracking-wider uppercase text-purple-600 bg-purple-100 px-3 py-1 rounded-full mb-6">
+          <span className="text-sm font-bold tracking-wider uppercase text-blue-600 bg-blue-100 px-3 py-1 rounded-full mb-6">
             Web Development
           </span>
 
@@ -310,13 +295,15 @@ const WebDevSpecial = () => {
                 scalable enterprise apps."
               </span>
               <span className="text-xs font-bold text-gray-900 uppercase tracking-wide">
-                — Daniel Vaughn, Senior Instructor
+                — Athithyan A, Software Developer
               </span>
             </div>
           </div>
         </motion.div>
       </div>
     </section>
+      <ScrollTypography/>
+    </>
   );
 };
 

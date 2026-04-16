@@ -87,8 +87,8 @@ export default function Hero() {
 
   return (
     <>
-      <section className="relative w-full pt-20 pb-16 px-6 flex flex-col items-center overflow-hidden bg-linear-to-b from-white via-purple-200 to-white">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-150 h-75 bg-purple-200/30 blur-[120px] rounded-full -z-10" />
+      <section className="relative w-full pt-20 pb-20 px-6 flex flex-col items-center overflow-hidden bg-linear-to-b from-white via-blue-200 to-white">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-150 h-75 bg-blue-200/30 blur-[120px] rounded-full -z-10" />
 
         <motion.div
           variants={containerVariants}
@@ -113,10 +113,10 @@ export default function Hero() {
 
           <motion.h1
             variants={itemVariants}
-            className="text-4xl md:text-8xl font-bold tracking-tight text-gray-900 mb-8 leading-[1.1]"
+            className="text-4xl md:text-8xl font-semibold font-clash tracking-tight text-gray-900 mb-8 leading-[1.1]"
           >
             Master your future in <br />
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-blue-500">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-900 to-blue-500">
               just a few clicks.
             </span>
           </motion.h1>
@@ -136,7 +136,7 @@ export default function Hero() {
             variants={itemVariants}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <button className="group relative px-8 py-4 bg-[#8B5CF6] text-white rounded-full font-bold text-lg hover:bg-purple-700 transition-all flex items-center gap-2 shadow-xl shadow-purple-200">
+            <button className="group relative px-8 py-4 bg-blue-900 text-white rounded-full font-bold text-lg hover:bg-blue-800 transition-all flex items-center gap-2 shadow-xl shadow-blue-600">
               Get Started — it's free
               <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
@@ -165,15 +165,15 @@ export default function Hero() {
               </div>
               <LayoutTemplate
                 size={20}
-                className="hover:text-purple-600 cursor-pointer transition-colors"
+                className="hover:text-blue-600 cursor-pointer transition-colors"
               />
               <Type
                 size={20}
-                className="hover:text-purple-600 cursor-pointer transition-colors"
+                className="hover:text-blue-600 cursor-pointer transition-colors"
               />
               <ImageIcon
                 size={20}
-                className="hover:text-purple-600 cursor-pointer transition-colors"
+                className="hover:text-blue-600 cursor-pointer transition-colors"
               />
             </div>
 
@@ -242,10 +242,10 @@ export default function Hero() {
                 className="absolute top-28 right-1/4 z-30 pointer-events-none flex flex-col items-start"
               >
                 <MousePointer2
-                  className="text-[#8B5CF6] fill-[#8B5CF6] -rotate-12"
+                  className="text-blue-500 fill-blue-500 -rotate-12"
                   size={24}
                 />
-                <div className="bg-[#8B5CF6] text-white text-[10px] font-bold px-3 py-1 rounded-full mt-1 ml-4 shadow-lg">
+                <div className="bg-blue-500 text-white text-[10px] font-bold px-3 py-1 rounded-full mt-1 ml-4 shadow-lg">
                   Jody Hekla
                 </div>
               </motion.div>
@@ -317,7 +317,7 @@ export default function Hero() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="mt-24 mb-8 w-full max-w-7xl mx-auto overflow-hidden relative mask-[linear-gradient(to_right,transparent,black_15%,black_85%,transparent)]"
+          className="mt-35 w-full max-w-7xl mx-auto overflow-hidden relative mask-[linear-gradient(to_right,transparent,black_15%,black_85%,transparent)]"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >

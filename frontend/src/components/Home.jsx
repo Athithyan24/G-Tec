@@ -26,13 +26,13 @@ export default function Home() {
   return (
     <>
       <header
-        className={`fixed w-full top-0 z-50 bg-stone-500/70 backdrop-blur-md border-b border-gray-100 transition-all duration-500 ease-in-out ${
+        className={`fixed w-full top-0 z-50 bg-blue-900 backdrop-blur-md border-b border-gray-100 transition-all duration-500 ease-in-out ${
           isVisible
             ? "translate-y-0 opacity-100"
             : "-translate-y-full opacity-0"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 h-25 flex items-center justify-between">
           {/* Logo Section */}
           <div className="flex items-center gap-4 cursor-pointer">
             <img
@@ -72,15 +72,16 @@ export default function Home() {
 
           {/* Login Button (Draftr Pill Style) */}
           <div className="flex items-center">
-            <button className="flex items-center gap-2 bg-gray-900 text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-purple-600 hover:shadow-lg hover:shadow-purple-200 transition-all duration-300">
+            <button className="flex items-center gap-2 hover:text-white bg-white text-blue-500 px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-200 transition-all duration-300">
               Login
               <User size={16} />
             </button>
           </div>
         </div>
       </header>
-
-      <Hero />
+<main className="pt-20">
+        <Hero />
+      </main>
     </>
   );
 }

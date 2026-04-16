@@ -63,9 +63,9 @@ const LogoCarousel = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight mb-4">
+            <h2 className="text-4xl md:text-5xl font-clash text-gray-900 tracking-tight mb-4">
               Explore our{" "}
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-violet-600 to-blue-500">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-800 to-blue-400">
                 learning paths
               </span>
             </h2>
