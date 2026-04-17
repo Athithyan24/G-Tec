@@ -2,6 +2,14 @@ import React from "react";
 import Hero from "./Hero";
 import { useState, useEffect } from "react";
 import { Home as HomeIcon, Info, Phone, User } from "lucide-react";
+import LogoCarousel from "./contents";
+import SpecialAccounting from "./SpecialAccounting";
+import WebDevSpecial from "./SpecialWebDev";
+import ScrollTypography from './ScrollAnime'
+import DesignTestimonial from "./DesigningUi"
+import PricingSection from "./Offers";
+// import GtecFooter from "./Footer";
+import GtecWelcomeSection from "./FinalHome"
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState(true);
@@ -26,19 +34,19 @@ export default function Home() {
   return (
     <>
       <header
-        className={`fixed w-full top-0 z-50 bg-blue-900 backdrop-blur-md border-b border-gray-100 transition-all duration-500 ease-in-out ${
+        className={`fixed w-full top-0 z-100 bg-blue-900 backdrop-blur-md border-b border-gray-100 transition-all duration-500 ease-in-out ${
           isVisible
             ? "translate-y-0 opacity-100"
             : "-translate-y-full opacity-0"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 h-25 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 h-30 flex items-center justify-between">
           {/* Logo Section */}
           <div className="flex items-center gap-4 cursor-pointer">
             <img
               src="/logo1.webp"
               alt="G-Tech Logo"
-              className="h-20 w-auto object-contain"
+              className="h-25 w-auto object-contain"
             />
             <span className="text-2xl font-light tracking-tight text-white mt-1">
               Nagercoil
@@ -81,6 +89,14 @@ export default function Home() {
       </header>
 <main className="pt-20">
         <Hero />
+        <LogoCarousel />
+        <SpecialAccounting />
+      <WebDevSpecial />
+      <ScrollTypography/>
+    <DesignTestimonial/>
+      <PricingSection />
+        {/* <GtecFooter /> */}
+        <GtecWelcomeSection />
       </main>
     </>
   );

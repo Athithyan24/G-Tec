@@ -19,7 +19,6 @@ import {
   Paperclip,
   History,
 } from "lucide-react";
-import WebDevSpecial from "./SpecialWebDev";
 
 const specializedCourses = [
   {
@@ -362,7 +361,6 @@ const SpecialAccounting = () => {
 </motion.div>
         </div>
       </section>
-      <WebDevSpecial />
     </>
   );
 };

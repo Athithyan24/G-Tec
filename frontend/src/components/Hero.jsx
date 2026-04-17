@@ -7,7 +7,6 @@ import {
   useTransform,
   wrap,
 } from "framer-motion";
-import LogoCarousel from "./contents";
 import {
   ChevronRight,
   ArrowUpRight,
@@ -338,7 +337,7 @@ export default function Hero() {
           </motion.div>
         </motion.div>
       </section>
-      <LogoCarousel />
+      
     </>
   );
 }

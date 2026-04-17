@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import ScrollTypography from './ScrollAnime'
 
 const stackIcons = [
   {
@@ -302,7 +301,6 @@ const WebDevSpecial = () => {
         </motion.div>
       </div>
     </section>
-      <ScrollTypography/>
     </>
   );
 };

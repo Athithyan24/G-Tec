@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Code2, GraduationCap, Palette, ArrowRight } from "lucide-react";
-import SpecialAccounting from "./SpecialAccounting";
 
 const categories = [
   {
@@ -115,7 +114,6 @@ const LogoCarousel = () => {
           </motion.div>
         </div>
       </section>
-      <SpecialAccounting />
     </>
   );
 };

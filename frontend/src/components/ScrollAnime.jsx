@@ -1,6 +1,5 @@
 import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import DesignTestimonial from "./DesigningUi"
 export default function ScrollImageGallery() {
   const { scrollY } = useScroll();
 
@@ -102,7 +101,6 @@ export default function ScrollImageGallery() {
         </motion.div>
       ))}
     </section>
-    <DesignTestimonial/>
     </>
   );
 }
