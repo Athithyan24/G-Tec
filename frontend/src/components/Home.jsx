@@ -8,7 +8,7 @@ import WebDevSpecial from "./SpecialWebDev";
 import ScrollTypography from './ScrollAnime'
 import DesignTestimonial from "./DesigningUi"
 import PricingSection from "./Offers";
-// import GtecFooter from "./Footer";
+import GtecFooter from "./Footer";
 import GtecWelcomeSection from "./FinalHome"
 
 export default function Home() {
@@ -41,7 +41,6 @@ export default function Home() {
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 h-30 flex items-center justify-between">
-          {/* Logo Section */}
           <div className="flex items-center gap-4 cursor-pointer">
             <img
               src="/logo1.webp"
@@ -53,7 +52,6 @@ export default function Home() {
             </span>
           </div>
 
-          {/* Navigation Links */}
           <nav className="hidden md:flex items-center space-x-8">
             <a
               href="#home"
@@ -78,7 +76,6 @@ export default function Home() {
             </a>
           </nav>
 
-          {/* Login Button (Draftr Pill Style) */}
           <div className="flex items-center">
             <button className="flex items-center gap-2 hover:text-white bg-white text-blue-500 px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-200 transition-all duration-300">
               Login
@@ -95,8 +92,8 @@ export default function Home() {
       <ScrollTypography/>
     <DesignTestimonial/>
       <PricingSection />
-        {/* <GtecFooter /> */}
         <GtecWelcomeSection />
+        <GtecFooter />
       </main>
     </>
   );

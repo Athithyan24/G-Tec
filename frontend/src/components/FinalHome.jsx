@@ -1,8 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { 
-  Type, ImageIcon, Hexagon, Layers, Palette, Settings, 
-  MousePointer2, ChevronDown, Share2, GripVertical, Eye 
+  Type, ImageIcon,Plus, Hexagon, Layers, Palette, Settings, 
+  MousePointer2, ChevronDown, Share2, GripVertical, Eye, Frame, Square,
+  AlignLeft, AlignCenter, AlignRight, Link2   
 } from "lucide-react";
 export default function CreativeWorkflowSection() {
     const img=["/cr1.jpg", "/cr2.jpg", "/cr3.jpg"];
@@ -21,12 +22,12 @@ export default function CreativeWorkflowSection() {
           className="flex flex-col items-center gap-6"
         >
           {/* USER REQUEST: Heading - Match theme with bold black font and a blue emphasis on "Creative" */}
-          <h1 className="text-5xl md:text-6xl font-clash text-black tracking-tighter leading-none max-w-4xl mx-auto">
+          <h1 className="text-5xl md:text-5xl font-clash text-black tracking-tighter leading-none max-w-4xl mx-auto">
             Take your <span className="text-blue-600">Creative</span> workflow to the next level
           </h1>
 
           {/* USER REQUEST: 2-line Paragraph - Light grey, centered, and matching creative theme */}
-          <p className="text-xl md:text-2xl text-gray-500 max-w-2xl mx-auto leading-relaxed font-normal">
+          <p className="text-xl md:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed font-normal">
             Effortlessly create stunning visual content with our integrated suite of design tools. Enhance collaboration and speed up delivery times across your entire team.
           </p>
 
@@ -37,7 +38,7 @@ export default function CreativeWorkflowSection() {
         </motion.div>
 
         {/* === BOTTOM BLOCK: Dashboard Mockup (Matching dark aesthetic from image) === */}
-        <section className="w-full bg-white py-24 px-4 md:px-12 font-sans overflow-hidden">
+        <section className="w-full bg-white py-2 px-4 md:px-12 font-sans overflow-hidden">
       <div className="max-w-7xl mx-auto">
         
         {/* Your Exact Starting Animation & Container */}
@@ -52,7 +53,7 @@ export default function CreativeWorkflowSection() {
           <div className="bg-white rounded-t-[2.5rem] border-b border-gray-100 px-6 py-4 flex items-center justify-between shadow-sm relative z-20">
             {/* Left: Logo */}
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md shadow-blue-200">G</div>
+              <img src="/logo.png" className="w-16 h-11 p-2 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md shadow-blue-200"/>
               <span className="font-bold text-gray-800 text-lg hidden md:block">G-TEC Nagercoil</span>
             </div>
 
@@ -80,26 +81,108 @@ export default function CreativeWorkflowSection() {
           {/* 2. DASHBOARD BODY */}
           <div className="bg-white rounded-b-[2.5rem] flex flex-col md:flex-row min-h-[650px] overflow-hidden">
             
-            {/* LEFT SIDEBAR (Image 3 Tools) */}
-            <div className="w-full md:w-20 border-r border-gray-100 p-4 flex md:flex-col items-center gap-6 bg-white z-10">
-              {[MousePointer2, Type, ImageIcon, Hexagon, Layers, Palette].map((Icon, i) => (
-                <div key={i} className={`p-3.5 rounded-2xl transition-all group cursor-pointer ${i === 0 ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-gray-400 hover:bg-gray-50 hover:text-blue-600'}`}>
-                  <Icon size={22} strokeWidth={2.5} />
+            {/* LEFT SIDEBAR AREA (2 Divisions: Tools + Layers) */}
+            <div className="flex shrink-0 border-r border-gray-100 bg-white z-10">
+              
+              {/* 1st Division: Tool Icons */}
+              <div className="w-16 border-r border-gray-100 p-3 flex flex-col items-center gap-5 bg-white">
+                {[MousePointer2, Type, ImageIcon, Hexagon, Layers, Palette].map((Icon, i) => (
+                  <div key={i} className={`p-2.5 rounded-xl transition-all cursor-pointer flex items-center justify-center ${i === 0 ? 'bg-blue-600 text-white shadow-md shadow-blue-200' : 'text-gray-400 hover:bg-gray-50 hover:text-blue-600'}`}>
+                    <Icon size={20} strokeWidth={2.5} />
+                  </div>
+                ))}
+                <div className="mt-auto p-2.5 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors">
+                  <Settings size={20} strokeWidth={2.5} />
                 </div>
-              ))}
-              <div className="md:mt-auto p-3.5 text-gray-300 hover:text-gray-600 cursor-pointer transition-colors">
-                <Settings size={22} strokeWidth={2.5} />
+              </div>
+
+              {/* 2nd Division: Pages & Layers Panel */}
+              <div className="w-48 p-4 flex flex-col gap-6 bg-[#fafafa] border-white">
+                
+                {/* Pages Dropdown Section */}
+                <div>
+                  <div className="flex items-center justify-between text-gray-800 mb-2 font-bold text-[11px] uppercase tracking-wider">
+                    <div className="flex items-center gap-1.5 cursor-pointer hover:text-blue-600 transition-colors">
+                      <ChevronDown size={14} />
+                      <span>Pages</span>
+                    </div>
+                    <Plus size={14} className="text-gray-400 hover:text-gray-800 cursor-pointer transition-colors" />
+                  </div>
+                  <div className="pl-5 space-y-1 text-sm font-semibold text-gray-500">
+                    <div className="text-blue-600 bg-blue-50 py-1.5 px-3 rounded-lg cursor-pointer">Page 1</div>
+                    <div className="py-1.5 px-3 hover:bg-gray-200/50 rounded-lg cursor-pointer transition-colors">Page 2</div>
+                  </div>
+                </div>
+
+                {/* Layers List Section */}
+                <div className="flex-1">
+                  <div className="flex items-center gap-1.5 text-gray-800 mb-2 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-blue-600 transition-colors">
+                    <ChevronDown size={14} />
+                    <span>Layers</span>
+                  </div>
+                  
+                  <div className="space-y-0.5 text-sm font-semibold text-gray-600">
+                    {/* Layer: Frame */}
+                    <div className="flex items-center gap-3 p-2 hover:bg-gray-200/50 rounded-lg cursor-pointer transition-colors">
+                      <Frame size={14} className="text-gray-400" />
+                      <span>Frame</span>
+                    </div>
+                    
+                    {/* Layer: Rectangle */}
+                    <div className="flex items-center gap-3 p-2 hover:bg-gray-200/50 rounded-lg cursor-pointer transition-colors">
+                      <Square size={14} className="text-gray-400" />
+                      <span>Rectangle</span>
+                    </div>
+
+                    {/* Layer: Text */}
+                    <div className="flex items-center gap-3 p-2 hover:bg-gray-200/50 rounded-lg cursor-pointer transition-colors">
+                      <Type size={14} className="text-gray-400" />
+                      <span>Text here</span>
+                    </div>
+
+                    {/* Layer: Images */}
+                    <div className="flex items-center gap-3 p-2 hover:bg-gray-200/50 rounded-lg cursor-pointer transition-colors">
+                      <ImageIcon size={14} className="text-gray-400" />
+                      <span>Images</span>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
 
             {/* CENTER CANVAS (Image 4 Styling) */}
-            <div className="flex-1 bg-gray-50 p-6 md:p-12 relative overflow-hidden flex flex-col">
-              {/* Dot Grid Background Effect */}
-              <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: `radial-gradient(#000 2px, transparent 2px)`, backgroundSize: '32px 32px' }}></div>
+            <div className="flex-1 bg-gray-50 relative overflow-hidden flex flex-col">
               
-              {/* Main Canvas Area */}
-              <div className="relative flex-1 w-full border-2 border-dashed border-gray-300 rounded-[2rem] flex items-center justify-center bg-white/60 backdrop-blur-sm overflow-hidden">
+              {/* 1. NEW: Artboard Top Header (from image) */}
+              <div className="w-full bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between z-20 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-700 hover:text-blue-600 cursor-pointer transition-colors">
+                  <span className="text-sm font-semibold tracking-wide">Landing_page_design_02</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <div className="flex items-center gap-4">
+                   <div className="flex -space-x-2">
+                     {/* Replace with your avatar images if needed */}
+                     <div className="w-7 h-7 rounded-full border-2 border-white bg-pink-500"></div>
+                     <div className="w-7 h-7 rounded-full border-2 border-white bg-purple-500"></div>
+                     <div className="w-7 h-7 rounded-full border-2 border-white bg-blue-500"></div>
+                   </div>
+                   <button className="w-7 h-7 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition-colors">
+                     <Plus size={14} />
+                   </button>
+                   <span className="text-sm font-semibold text-gray-400 border-l border-gray-200 pl-4">124%</span>
+                </div>
+              </div>
+
+              {/* 2. Main Canvas Area */}
+              <div className="relative flex-1 w-full flex items-center justify-center bg-[#f8f9fa] overflow-hidden">
                 
+                {/* Dot Grid Background Effect */}
+                <div 
+                  className="absolute inset-0 opacity-[0.15]" 
+                  style={{ backgroundImage: `radial-gradient(#9ca3af 1px, transparent 1px)`, backgroundSize: '24px 24px' }}
+                ></div>
+
                 {/* Moving Mouse Cursor (Animated) */}
                 <motion.div 
                   animate={{ 
@@ -115,88 +198,120 @@ export default function CreativeWorkflowSection() {
                   </div>
                 </motion.div>
 
-                {/* Main Visual Content (Bounding Box Style) */}
-                <div className="relative group scale-110 md:scale-125">
-                  <div className="w-64 h-64 rounded-[3rem] shadow-2xl shadow-indigo-200 rotate-3 flex items-center justify-center p-8 relative overflow-hidden">
-                     {/* Inner glass effect on card */}
-                     <img src="https://pixabay.com/images/download/alexas_fotos-ladybug-9635222_1920.jpg" className="absolute inset-0 bg-white/10 border-t border-l border-white/20 rounded-[3rem]"/>
-                     <h3 className="text-white text-4xl font-black text-center tracking-tighter leading-[0.9] relative z-10 drop-shadow-md">
-                       CRAFTING<br/>BRANDS
-                     </h3>
+                {/* 3. Main Visual Content (Straightened Bounding Box Style) */}
+                <div className="relative group scale-100 md:scale-110">
+                  {/* The Blue Selection Outline */}
+                  <div className="w-80 h-70 border-2 border-blue-500 flex items-center justify-center relative overflow-hidden bg-white shadow-xl">
+                     
+                     {/* Your Image */}
+                     <img 
+                       src={"/vcc.jpg"} 
+                       className="absolute inset-0 w-full h-full object-cover"
+                       alt="Crafting Future"
+                     />
+                     
+                     {/* Text Overlay */}
+                     <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                       <h3 className="text-white text-5xl font-black text-center tracking-tighter leading-[0.9] relative z-10 drop-shadow-xl">
+                         CRAFTING<br/>FUTURE
+                       </h3>
+                     </div>
                   </div>
+
                   {/* Bounding Box Corners (Anchor Points) */}
-                  <div className="absolute -top-2 -left-2 w-4 h-4 bg-white border-2 border-blue-600 rounded-sm shadow-sm"></div>
-                  <div className="absolute -top-2 -right-2 w-4 h-4 bg-white border-2 border-blue-600 rounded-sm shadow-sm"></div>
-                  <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-white border-2 border-blue-600 rounded-sm shadow-sm"></div>
-                  <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-white border-2 border-blue-600 rounded-sm shadow-sm"></div>
+                  <div className="absolute -top-1.5 -left-1.5 w-3 h-3 bg-white border-2 border-blue-600 rounded-sm shadow-sm"></div>
+                  <div className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-white border-2 border-blue-600 rounded-sm shadow-sm"></div>
+                  <div className="absolute -bottom-1.5 -left-1.5 w-3 h-3 bg-white border-2 border-blue-600 rounded-sm shadow-sm"></div>
+                  <div className="absolute -bottom-1.5 -right-1.5 w-3 h-3 bg-white border-2 border-blue-600 rounded-sm shadow-sm"></div>
+                  
+                  {/* Bounding Box Midpoints (Anchor Points) */}
+                  <div className="absolute top-1/2 -left-1.5 w-3 h-3 bg-white border-2 border-blue-600 rounded-sm shadow-sm -translate-y-1/2"></div>
+                  <div className="absolute top-1/2 -right-1.5 w-3 h-3 bg-white border-2 border-blue-600 rounded-sm shadow-sm -translate-y-1/2"></div>
+                  <div className="absolute -top-1.5 left-1/2 w-3 h-3 bg-white border-2 border-blue-600 rounded-sm shadow-sm -translate-x-1/2"></div>
+                  <div className="absolute -bottom-1.5 left-1/2 w-3 h-3 bg-white border-2 border-blue-600 rounded-sm shadow-sm -translate-x-1/2"></div>
                 </div>
+
               </div>
             </div>
 
-            {/* RIGHT SIDEBAR (Image 2 Tools & Expansion) */}
-            <div className="w-full md:w-80 border-l border-gray-100 p-6 flex flex-col gap-8 bg-white z-10">
+            {/* RIGHT SIDEBAR (Properties / Inspector Panel) */}
+            <div className="w-full md:w-64 border-l border-gray-200 bg-[#fafafa] flex flex-col text-sm z-10 shrink-0 overflow-y-auto">
               
-              {/* Properties Panel */}
-              <div className="space-y-5">
-                <div className="flex justify-between items-center">
-                  <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Properties</span>
-                  <GripVertical size={16} className="text-gray-300" />
+              {/* 1. Frame Section */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer">
+                <div className="flex items-center gap-2 text-gray-800">
+                  <span className="font-semibold text-[13px]">Frame</span>
+                  <ChevronDown size={14} className="text-gray-500" />
                 </div>
+              </div>
+
+              {/* 2. Position & Alignment Section */}
+              <div className="p-4 border-b border-gray-200 flex flex-col gap-5">
                 
-                <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100 space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-500">Opacity</span>
-                    <span className="text-sm font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md">85%</span>
+                {/* Alignment Icons */}
+                <div className="flex items-center justify-between text-gray-400">
+                  <div className="flex gap-2">
+                    <div className="p-1 hover:bg-gray-200 hover:text-gray-800 rounded cursor-pointer transition-colors"><AlignLeft size={16} /></div>
+                    <div className="p-1 hover:bg-gray-200 hover:text-gray-800 rounded cursor-pointer transition-colors"><AlignCenter size={16} /></div>
+                    <div className="p-1 hover:bg-gray-200 hover:text-gray-800 rounded cursor-pointer transition-colors"><AlignRight size={16} /></div>
                   </div>
-                  <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      whileInView={{ width: "85%" }}
-                      transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-                      className="h-full bg-blue-600 rounded-full"
-                    ></motion.div>
+                  <div className="w-px h-4 bg-gray-300"></div> {/* Divider */}
+                  <div className="flex gap-2">
+                    {/* Rotated icons for top, middle, bottom alignment */}
+                    <div className="p-1 hover:bg-gray-200 hover:text-gray-800 rounded cursor-pointer transition-colors"><AlignLeft size={16} className="-rotate-90" /></div>
+                    <div className="p-1 hover:bg-gray-200 hover:text-gray-800 rounded cursor-pointer transition-colors"><AlignCenter size={16} className="-rotate-90" /></div>
+                    <div className="p-1 hover:bg-gray-200 hover:text-gray-800 rounded cursor-pointer transition-colors"><AlignRight size={16} className="-rotate-90" /></div>
+                  </div>
+                </div>
+
+                {/* X and Y Axis */}
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3 flex-1 group">
+                    <span className="text-gray-400 text-xs font-semibold group-hover:text-gray-800 transition-colors cursor-ew-resize">X</span>
+                    <input type="text" defaultValue="144" className="w-full bg-transparent border-b border-transparent hover:border-gray-300 focus:border-blue-500 outline-none text-gray-800 text-[13px] font-medium" />
+                  </div>
+                  <div className="flex items-center gap-3 flex-1 group">
+                    <span className="text-gray-400 text-xs font-semibold group-hover:text-gray-800 transition-colors cursor-ew-resize">Y</span>
+                    <input type="text" defaultValue="256" className="w-full bg-transparent border-b border-transparent hover:border-gray-300 focus:border-blue-500 outline-none text-gray-800 text-[13px] font-medium" />
                   </div>
                 </div>
               </div>
 
-              {/* Layers Panel (Expansion View) */}
-              <div className="space-y-5">
-                <div className="flex justify-between items-center">
-                   <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Layers</span>
-                </div>
+              {/* 3. Layout Section (Width, Height, Link) */}
+              <div className="p-4 border-b border-gray-200 flex flex-col gap-4">
+                <span className="font-bold text-[10px] text-gray-400 uppercase tracking-widest">Layout</span>
                 
-                <div className="space-y-2">
-                  {[
-                    { name: 'Gradient_Bg', active: true },
-                    { name: 'Header_Text', active: false },
-                    { name: 'Avatar_Group', active: false }
-                  ].map((layer, i) => (
-                    <div key={i} className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer ${layer.active ? 'bg-blue-50 border-blue-100 shadow-sm' : 'border-transparent hover:bg-gray-50'}`}>
-                      <div className="flex items-center gap-3">
-                        <Eye size={16} className={layer.active ? 'text-blue-600' : 'text-gray-400'} />
-                        <span className={`text-sm font-semibold ${layer.active ? 'text-blue-700' : 'text-gray-600'}`}>{layer.name}</span>
-                      </div>
-                      <ChevronDown size={16} className={layer.active ? 'text-blue-400' : 'text-gray-300'} />
-                    </div>
-                  ))}
+                <div className="flex items-center justify-between">
+                  {/* Width */}
+                  <div className="flex items-center gap-3 w-20 group">
+                    <span className="text-gray-400 text-xs font-semibold group-hover:text-gray-800 transition-colors cursor-ew-resize">W</span>
+                    <input type="text" defaultValue="1280" className="w-full bg-transparent border-b border-transparent hover:border-gray-300 focus:border-blue-500 outline-none text-gray-800 text-[13px] font-medium" />
+                  </div>
+                  
+                  {/* Link Icon */}
+                  <div className="p-1 hover:bg-gray-200 text-gray-400 hover:text-gray-800 rounded cursor-pointer transition-colors">
+                    <Link2 size={14} />
+                  </div>
+
+                  {/* Height */}
+                  <div className="flex items-center gap-3 w-20 group">
+                    <span className="text-gray-400 text-xs font-semibold group-hover:text-gray-800 transition-colors cursor-ew-resize">H</span>
+                    <input type="text" defaultValue="720" className="w-full bg-transparent border-b border-transparent hover:border-gray-300 focus:border-blue-500 outline-none text-gray-800 text-[13px] font-medium" />
+                  </div>
                 </div>
               </div>
 
-              {/* Quick Actions (Image 2 Progress Circle) */}
-              <div className="mt-auto pt-6 border-t border-gray-100">
-                <div className="flex items-center gap-4 bg-[#111111] text-white p-5 rounded-2xl shadow-xl">
-                  {/* SVG Circular Loader */}
-                  <div className="relative w-12 h-12 shrink-0">
-                    <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                      {/* Background track */}
-                      <path className="text-zinc-800" strokeWidth="3" fill="none" stroke="currentColor" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                      {/* Progress track */}
-                      <path className="text-blue-500 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" strokeDasharray="75, 100" strokeWidth="3" strokeLinecap="round" fill="none" stroke="currentColor" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                    </svg>
+              {/* 4. Appearance Section */}
+              <div className="p-4 border-b border-gray-200 flex flex-col gap-4">
+                <span className="font-bold text-[10px] text-gray-400 uppercase tracking-widest">Appearance</span>
+                
+                <div className="flex items-center justify-between group">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-[3px] bg-blue-600 border border-gray-200 cursor-pointer"></div>
+                    <span className="text-gray-600 text-[13px] font-medium cursor-pointer">Fill</span>
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Exporting</p>
-                    <p className="text-sm font-semibold">Assets Ready</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-800 text-[13px] font-medium">100%</span>
                   </div>
                 </div>
               </div>
