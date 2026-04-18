@@ -1,17 +1,9 @@
 import React from "react";
-import Hero from "./Hero";
 import { useState, useEffect } from "react";
-import { Home as HomeIcon, Info, Phone, User } from "lucide-react";
-import LogoCarousel from "./contents";
-import SpecialAccounting from "./SpecialAccounting";
-import WebDevSpecial from "./SpecialWebDev";
-import ScrollTypography from './ScrollAnime'
-import DesignTestimonial from "./DesigningUi"
-import PricingSection from "./Offers";
-import GtecFooter from "./Footer";
-import GtecWelcomeSection from "./FinalHome"
+import { Info, Phone, User } from "lucide-react";
+import { Link } from "react-router-dom"; // <-- Added React Router Link
 
-export default function Home() {
+export default function HeaderSection() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
@@ -31,6 +23,7 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
+
   return (
     <>
       <header
@@ -41,7 +34,9 @@ export default function Home() {
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 h-30 flex items-center justify-between">
-          <div className="flex items-center gap-4 cursor-pointer">
+          
+          {/* Changed div to Link so the Logo acts as the Home button */}
+          <Link to="/" className="flex items-center gap-4 cursor-pointer">
             <img
               src="/logo1.webp"
               alt="G-Tech Logo"
@@ -50,30 +45,26 @@ export default function Home() {
             <span className="text-2xl font-light tracking-tight text-white mt-1">
               Nagercoil
             </span>
-          </div>
+          </Link>
 
           <nav className="hidden md:flex items-center space-x-8">
-            <a
-              href="#home"
-              className="flex items-center gap-2 text-sm font-medium text-white hover:text-purple-600 transition-colors"
-            >
-              <HomeIcon size={16} />
-              Home
-            </a>
-            <a
-              href="#about"
+            {/* Removed the Home link here */}
+            
+            <Link
+              to="/about"
               className="flex items-center gap-2 text-sm font-medium text-white hover:text-purple-600 transition-colors"
             >
               <Info size={16} />
               About Us
-            </a>
-            <a
-              href="#contact"
+            </Link>
+            
+            <Link
+              to="/contact"
               className="flex items-center gap-2 text-sm font-medium text-white hover:text-purple-600 transition-colors"
             >
               <Phone size={16} />
               Contact Us
-            </a>
+            </Link>
           </nav>
 
           <div className="flex items-center">
@@ -84,17 +75,6 @@ export default function Home() {
           </div>
         </div>
       </header>
-<main className="pt-20">
-        <Hero />
-        <LogoCarousel />
-        <SpecialAccounting />
-      <WebDevSpecial />
-      <ScrollTypography/>
-    <DesignTestimonial/>
-      <PricingSection />
-        <GtecWelcomeSection />
-        <GtecFooter />
-      </main>
     </>
   );
 }

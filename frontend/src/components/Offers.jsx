@@ -64,7 +64,7 @@ export default function PricingSection() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
           className="max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-clash tracking-tight text-gray-900 mb-4">
             Flexible pricing plans
           </h2>
           <p className="text-lg md:text-xl pb-10 text-gray-600 font-normal">

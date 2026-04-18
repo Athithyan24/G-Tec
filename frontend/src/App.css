@@ -26,6 +26,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Helvetica';
+  src: url('./fonts/ClashDisplay-Variable.ttf') format('truetype');
+  font-weight: 200 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* 4. Tell Tailwind v4 to create the font classes */
 @theme {
   /* Creates the 'font-satoshi' class */

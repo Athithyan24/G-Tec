@@ -100,7 +100,7 @@ const SpecialAccounting = () => {
                 <Sprout size={28} strokeWidth={1.5} />
               </div>
 
-              <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-gray-950 tracking-tight leading-tight font-">
+              <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-semibold font-clash text-gray-950 tracking-tight leading-tight font-">
                 Special Area
               </h2>
               <p className="text-gray-800 text-lg md:text-xl font-medium max-w-lg">

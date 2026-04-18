@@ -259,7 +259,7 @@ const WebDevSpecial = () => {
             Web Development
           </span>
 
-          <h2 className="text-4xl md:text-4xl lg:text-5xl font-semibold text-gray-900 tracking-normal leading-tight mb-6">
+          <h2 className="text-4xl md:text-4xl lg:text-5xl font-semibold font-clash text-gray-900 tracking-normal leading-tight mb-6">
             One ecosystem, <br />
             unlimited potential.
           </h2>

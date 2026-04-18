@@ -69,8 +69,8 @@ export default function DesignTestimonial() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-center" // Changed to items-center to balance the Lottie file
       >
-        <div className="flex flex-col justify-center">
-          <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] leading-tight font-bold tracking-tight text-gray-900 mb-8">
+        <div className="flex flex-col font-clash justify-center">
+          <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] leading-tight tracking-tight text-gray-900 mb-8">
             Loved by students & <br className="hidden lg:block" /> tech teams
           </h2>
           
