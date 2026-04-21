@@ -2,6 +2,42 @@ import React from "react";
 import { motion } from "framer-motion";
 
 export default function AboutIntro(){
+  const text1="The story behind";
+  const words1=text1.split(" ");
+
+  const text2="Our";
+  const words2=text2.split(" ");
+
+  const container = {
+    hidden: { opacity: 0 },
+    visible: (i = 1) => ({
+      opacity: 1,
+      transition: { 
+        staggerChildren: 0.12,
+        delayChildren: 0.04 * i 
+      },
+    }),
+  };
+
+  const child = {
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)", 
+      transition: {
+        type: "spring",
+        damping: 20,   
+        stiffness: 100,
+        duration: 0.8   
+      },
+    },
+    hidden: {
+      opacity: 0,
+      y: 20,            
+      filter: "blur(10px)", 
+    },
+  };
+
     return(
         <section className=" w-full bg-white pt-40 pb-30 px-6 md:px-12 lg:px-24 font-sans mb-0 bg-linear-to-b from-white via-blue-200 to-white">
       
@@ -20,15 +56,23 @@ export default function AboutIntro(){
           </span>
         </motion.div>
 
-        <motion.h2 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-4xl md:text-6xl pt-10 lg:text-7xl font-clash text-gray-900 tracking-tighter leading-none mb-2 text-center uppercase"
-        >
-          The story behind
-        </motion.h2>
+        <motion.h2
+            variants={container}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.2 }}
+            className="text-4xl md:text-6xl pt-10 lg:text-7xl font-clash text-gray-900 tracking-tighter leading-none mb-2 text-center uppercase flex justify-center flex-wrap gap-x-4"
+          >
+            {words1.map((word, index) => (
+              <motion.span
+                variants={child}
+                key={index}
+                className="inline-block"
+              >
+                {word}
+              </motion.span>
+            ))}
+          </motion.h2>
 
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -38,9 +82,22 @@ export default function AboutIntro(){
           className="flex flex-wrap items-center justify-center gap-3 md:gap-6 mb-8"
         >
           
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-clash text-blue-700 tracking-tighter leading-none uppercase">
-            Our
-          </h2><div className="w-24 md:w-40 lg:w-56 h-12 md:h-20 lg:h-24 rounded-full overflow-hidden shadow-lg shrink-0 border-4 border-white mt-1 md:mt-2">
+          <motion.h2
+          variants={container}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.2 }}
+            className="text-4xl md:text-6xl lg:text-7xl font-clash text-blue-700 tracking-tighter leading-none uppercase">
+            {words2.map((word, index) => (
+              <motion.span
+                variants={child}
+                key={index}
+                className="inline-block"
+              >
+                {word}
+              </motion.span>
+            ))}
+          </motion.h2><div className="w-24 md:w-40 lg:w-56 h-12 md:h-20 lg:h-24 rounded-full overflow-hidden shadow-lg shrink-0 border-4 border-white mt-1 md:mt-2">
             <img 
               src="/std.jpg" 
               alt="Passion" 
@@ -74,7 +131,7 @@ export default function AboutIntro(){
             alt="G-TEC Campus Overview" 
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+          <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent"></div>
         </motion.div>
 
       </div>

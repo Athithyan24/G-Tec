@@ -3,6 +3,38 @@ import { motion } from "framer-motion";
 import { CheckCircle2, Layout, ShieldCheck, Sparkles } from "lucide-react";
 
 export default function AboutWhy() {
+  const text1="Our Vision & Core Values";
+  const words1=text1.split(" ");
+
+  const container = {
+    hidden: { opacity: 0 },
+    visible: (i = 1) => ({
+      opacity: 1,
+      transition: { 
+        staggerChildren: 0.12,
+        delayChildren: 0.04 * i 
+      },
+    }),
+  };
+
+  const child = {
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)", 
+      transition: {
+        type: "spring",
+        damping: 20,   
+        stiffness: 100,
+        duration: 0.8   
+      },
+    },
+    hidden: {
+      opacity: 0,
+      y: 20,            
+      filter: "blur(10px)", 
+    },
+  };
   const whyGtecPoints = [
     {
       title: "Industry-Aligned Curriculum",
@@ -33,9 +65,22 @@ export default function AboutWhy() {
           transition={{ duration: 0.8 }}
           className="max-w-3xl mx-auto text-center mb-24" 
         >
-          <h3 className="text-4xl md:text-5xl font-clash text-blue-800 mb-6 tracking-tight">
-            Our Vision & Core Values
-          </h3>
+          <motion.h3 
+           variants={container}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.2 }}
+          className="text-4xl md:text-5xl font-clash font-medium text-blue-800 mb-6 tracking-tight">
+            {words1.map((word, index) => (
+                          <motion.span
+                            variants={child}
+                            key={index}
+                            className="inline-block"
+                          >
+                            {word}
+                          </motion.span>
+                        ))}
+          </motion.h3>
 
           {/* 2 Lines of small text */}
           <p className="text-sm md:text-base text-black leading-relaxed mb-6">

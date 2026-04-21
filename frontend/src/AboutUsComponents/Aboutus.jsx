@@ -2,6 +2,8 @@ import React from "react";
 import AboutIntro from "./AboutIntro"
 import AboutWhy from "./AboutWhy";
 import OurPartners from "./AboutGrade"
+import CareersSection from "./AboutCareer";
+import StaffSection from "./AboutStaff"
 export default function AboutSection() {
   return (
     <>
@@ -9,6 +11,8 @@ export default function AboutSection() {
     <AboutIntro />
     <AboutWhy />
     <OurPartners />
+    <StaffSection />
+    <CareersSection />
     </section>
     </>
   );

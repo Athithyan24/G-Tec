@@ -86,7 +86,14 @@ export default function StatsSection() {
       </div>
        
     </section>
-    <h1 className="align-middle content-center font-clash text-5xl">Our Value added Certificates</h1>
+    <motion.h1
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="text-center font-clash text-4xl md:text-5xl font-medium bg-linear-to-r from-red-500 via-blue-900 to-orange-500 bg-clip-text text-transparent tracking-tight my-34">
+        Our Value added Certificates
+      </motion.h1>
     <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
