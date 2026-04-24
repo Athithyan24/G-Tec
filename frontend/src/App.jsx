@@ -6,12 +6,18 @@ import './App.css';
 import HeaderSection from './components/Header';
 import HomeSection from './components/HomeSection';
 import FooterSection from './components/Footer';
+import EnrollmentForm from './components/EnrollmentForm';
 import AboutSection from './AboutUsComponents/Aboutus';
 
 // 1. IMPORT YOUR NEW COURSE COMPONENT HERE
 // Make sure the file path matches where you saved it!
 import CourseItTechnical from './CoursesSection/CourseItTechnical';
-import CourseItNonTechnical from './CoursesSection/CourseItNonTechnical'; 
+import CourseItNonTechnical from './CoursesSection/CourseItNonTechnical';
+import CourseDesigning from './CoursesSection/CourseDesigning'; 
+import CourseAccounting from './CoursesSection/CourseAccounting';
+import CourseCivil from './CoursesSection/CourseCivil';
+import LoginPage from './LoginPage';
+import StudentsTab from './StudentsDetails/StudentsTab'
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -37,6 +43,12 @@ function App() {
         {/* The path MUST match the path defined in your Header courseCategories array */}
         <Route path="/courses/it-technical" element={<CourseItTechnical />} />
         <Route path="/courses/it-non-technical" element={<CourseItNonTechnical />} />
+        <Route path="/courses/designing" element={< CourseDesigning/>} />
+        <Route path="/courses/accounting" element={< CourseAccounting/>} />
+        <Route path="/courses/civil" element={< CourseCivil/>} />
+        <Route path="/enroll" element={<EnrollmentForm />} />
+        <Route path="/login" element={<LoginPage/>} />
+        <Route path="/admin/students" element={<StudentsTab />} />
       </Routes>
 
       <FooterSection />
