@@ -23,6 +23,7 @@ app.use('/api/admin', adminAuthRoutes);
 const studentSchema = new mongoose.Schema({
   name: String,
   dob: String,
+  phone:String,
   course: String,
   educationType: String, // school or college
   institutionName: String,
@@ -41,6 +42,21 @@ const studentSchema = new mongoose.Schema({
 });
 
 const Student = mongoose.model('Student', studentSchema);
+
+const courseSchema = new mongoose.Schema({
+  title: String,
+  category: String, 
+  shortDesc: String,
+  fullDesc: String,
+  duration: String,
+  tags: [String], 
+  image: String, 
+  syllabus: [String], 
+  certifications: [String],
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Course = mongoose.model('Course', courseSchema);
 
 // 1. Get All Countries
 app.get('/api/countries', (req, res) => {
@@ -110,6 +126,45 @@ app.get('/api/india/pincode/:pin', async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
+{/* -------- Course Section -------- */}
+
+app.get('/api/courses', async (req, res) => {
+  try {
+    const courses = await Course.find().sort({ createdAt: -1 });
+    res.json(courses);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/courses', async (req, res) => {
+  try {
+    const newCourse = new Course(req.body);
+    await newCourse.save();
+    res.json({ success: true, message: "Course added successfully!" });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.put('/api/courses/:id', async (req, res) => {
+  try {
+    await Course.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json({ success: true, message: "Course updated successfully!" });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.delete('/api/courses/:id', async (req, res) => {
+  try {
+    await Course.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: "Course deleted!" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

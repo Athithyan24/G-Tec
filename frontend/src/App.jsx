@@ -18,6 +18,7 @@ import CourseAccounting from './CoursesSection/CourseAccounting';
 import CourseCivil from './CoursesSection/CourseCivil';
 import LoginPage from './LoginPage';
 import StudentsTab from './StudentsDetails/StudentsTab'
+import CourseManagement from './StudentsDetails/CourseManagement'
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -49,6 +50,7 @@ function App() {
         <Route path="/enroll" element={<EnrollmentForm />} />
         <Route path="/login" element={<LoginPage/>} />
         <Route path="/admin/students" element={<StudentsTab />} />
+        <Route path="/admin/courses" element={<CourseManagement />} />
       </Routes>
 
       <FooterSection />
