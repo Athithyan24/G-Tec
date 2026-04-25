@@ -32,8 +32,8 @@ export default function Designing() {
         <div className="flex flex-col mb-16 lg:mb-24 border-b border-zinc-200 pb-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <p className="text-blue-600 font-bold text-sm tracking-[0.2em] uppercase mb-6">Department of Computer Science & Designing</p>
-            <h1 className="text-5xl md:text-7xl lg:text-[7rem] font-clash font-bold tracking-tighter leading-none uppercase">
-              Designing <span className="text-zinc-400 font-light text-3xl md:text-5xl lg:text-7xl align-top ml-2 lg:ml-4">({courses.length.toString().padStart(2, '0')})</span>
+            <h1 className="text-3xl md:text-4xl lg:text-[4rem] font-clash font-bold leading-none uppercase">
+              Designing <span className="text-zinc-400 font-light text-xl md:text-3xl lg:text-5xl align-top ml-2 lg:ml-4">({courses.length.toString().padStart(2, '0')})</span>
             </h1>
           </motion.div>
         </div>

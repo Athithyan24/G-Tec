@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   Clock,
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 
 export default function Accounting() {
+  const navigate = useNavigate();
   const [selectedCourse, setSelectedCourse] = useState(null);
 
   const [courses, setCourses] = useState([]);
@@ -213,14 +215,25 @@ export default function Accounting() {
 
                     {/* ENROLLMENT ACTION */}
                     <div className="flex flex-col sm:flex-row gap-4 items-center border-t border-zinc-100 pt-8">
-                      <button className="w-full sm:w-auto px-10 py-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-xl shadow-blue-200">
-                        Enroll Now
-                      </button>
-                      <p className="text-zinc-400 text-xs font-medium text-center sm:text-left">
-                        * Limited seats available for the <br />
-                        upcoming batch.
-                      </p>
-                    </div>
+  <button 
+    onClick={() => {
+      // Redirect to enrollment page and pass the selected course data
+      navigate('/enroll', { 
+        state: { 
+          courseCategory: 'accounting', 
+          specificCourse: selectedCourse.title 
+        } 
+      });
+    }}
+    className="w-full sm:w-auto px-10 py-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-xl shadow-blue-200"
+  >
+    Enroll Now
+  </button>
+  <p className="text-zinc-400 text-xs font-medium text-center sm:text-left">
+    * Limited seats available for the <br />
+    upcoming batch.
+  </p>
+</div>
                   </div>
                 </motion.div>
               </div>

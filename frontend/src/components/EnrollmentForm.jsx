@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLocation } from "react-router-dom";
 import { useLottie } from "lottie-react";
 import studentAnimation from "../assets/Student.json";
 import {
@@ -8,10 +9,14 @@ import {
 } from "lucide-react";
 
 export default function EnrollmentForm() {
+  const location = useLocation();
+
   const { View: LottieAnimation } = useLottie({
     animationData: studentAnimation,
     loop: true,
   });
+
+  const [allCourses, setAllCourses] = useState([]);
 
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
@@ -19,7 +24,8 @@ export default function EnrollmentForm() {
   const [subDistricts, setSubDistricts] = useState([]);
 
   const [selection, setSelection] = useState({
-    name: "", dob: "", course: "", phone: "",
+    name: "", dob: "", course: location.state?.specificCourse || "", phone: "",
+    courseCategory: location.state?.courseCategory || "",
     educationType: "", institutionName: "", classGrade: "",
     department: "", degreeLevel: "", educationStatus: "",
     passOutYear: "", currentYear: "", country: null,
@@ -31,6 +37,7 @@ export default function EnrollmentForm() {
   // --- API UseEffects ---
   useEffect(() => {
     fetch(`${API_BASE}/countries`).then(res => res.json()).then(data => setCountries(data));
+    fetch(`${API_BASE}/courses`).then(res => res.json()).then(data => setAllCourses(data));
   }, []);
 
   useEffect(() => {
@@ -132,6 +139,7 @@ export default function EnrollmentForm() {
   // --- Compact Styling Classes ---
   const inputClass = "w-full px-3 py-2 bg-gray-50/80 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm font-medium text-gray-800 placeholder-gray-400";
   const labelClass = "text-[10px] font-bold text-gray-500 uppercase flex items-center gap-1.5 mb-1 tracking-wider";
+  const availableSubCourses = allCourses.filter(c => c.category === selection.courseCategory);
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 pb-70 pt-50">
@@ -241,15 +249,45 @@ export default function EnrollmentForm() {
               )}
             </AnimatePresence>
             
-            {/* 4. Target Course */}
-            <div>
-              <label className={labelClass}><BookOpen size={12}/> Interested Course</label>
-              <select className={`${inputClass} bg-blue-50/50 border-blue-100 text-blue-800`} value={selection.course} onChange={(e) => setSelection({...selection, course: e.target.value})}>
-                <option value="">Select a G-TEC course</option>
-                <option value="it-technical">IT / Technical</option><option value="designing">Designing</option>
-                <option value="accounting">Accounting</option><option value="civil">Civil / Architecture</option>
-              </select>
-            </div>
+            {/* --- 4. Target Course Selection --- */}
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  
+  {/* Dropdown 1: The Filter (Doesn't affect DB) */}
+  <div>
+    <label className={labelClass}><BookOpen size={12}/> Course Category</label>
+    <select 
+      className={`${inputClass} bg-blue-50/50 border-blue-100 text-blue-800`} 
+      value={selection.courseCategory} 
+      onChange={(e) => setSelection({...selection, courseCategory: e.target.value, course: ""})} // Resets specific course when category changes
+    >
+      <option value="">Select a category</option>
+      <option value="it-technical">IT / Technical</option>
+      <option value="it-non-technical">IT / Non-Technical</option>
+      <option value="designing">Designing</option>
+      <option value="accounting">Accounting</option>
+      <option value="civil">Civil / Architecture</option>
+    </select>
+  </div>
+
+  {/* Dropdown 2: The Actual Course (Saves to DB 'course' field) */}
+  <div>
+    <label className={labelClass}><BookOpen size={12}/> Specific Course</label>
+    <select 
+      className={`${inputClass} bg-blue-50/50 border-blue-100 text-blue-800`} 
+      value={selection.course} 
+      onChange={(e) => setSelection({...selection, course: e.target.value})}
+      disabled={!selection.courseCategory} // Locked until a category is chosen
+    >
+      <option value="">Select a specific course</option>
+      {availableSubCourses.map(c => (
+        <option key={c._id} value={c.title}>
+          {c.title}
+        </option>
+      ))}
+    </select>
+  </div>
+
+</div>
 
             <hr className="border-gray-100" />
 

@@ -9,6 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 const MONGO_URI = 'mongodb://127.0.0.1:27017/gtec_database';
+const nodemailer = require('nodemailer');
 
 mongoose.connect(MONGO_URI)
   .then(() => {
@@ -24,6 +25,7 @@ const studentSchema = new mongoose.Schema({
   name: String,
   dob: String,
   phone:String,
+  courseCategory: String,
   course: String,
   educationType: String, // school or college
   institutionName: String,
@@ -126,6 +128,47 @@ app.get('/api/india/pincode/:pin', async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
+{/*------------------ MailSection ---------------*/}
+
+app.post('/api/contact', async (req, res) => {
+  const { firstName, lastName, email, countryCode, phone, message } = req.body;
+
+  // 1. Create a transporter
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'athithabi2003@gmail.com', // Your Gmail address
+      pass: 'xonb doeb ldse oxob'   // YOUR 16-DIGIT APP PASSWORD
+    }
+  });
+
+  // 2. Define the Email Content
+  const mailOptions = {
+    from: `"${firstName} ${lastName}" <${email}>`,
+    to: 'athithyan.802319@sxcce.edu.in', // Where you want to receive the leads
+    subject: `New G-TEC Inquiry from ${firstName}`,
+    html: `
+      <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee;">
+        <h2 style="color: #2563eb;">New Student Inquiry</h2>
+        <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${countryCode} ${phone}</p>
+        <hr />
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      </div>
+    `
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ success: true, message: 'Email sent successfully!' });
+  } catch (error) {
+    console.error('Nodemailer Error:', error);
+    res.status(500).json({ success: false, message: 'Failed to send email.' });
   }
 });
 

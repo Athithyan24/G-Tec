@@ -8,6 +8,7 @@ import HomeSection from './components/HomeSection';
 import FooterSection from './components/Footer';
 import EnrollmentForm from './components/EnrollmentForm';
 import AboutSection from './AboutUsComponents/Aboutus';
+import ContactUs from "./ContactUs/ContactUs";
 
 // 1. IMPORT YOUR NEW COURSE COMPONENT HERE
 // Make sure the file path matches where you saved it!
@@ -40,6 +41,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomeSection />} />
         <Route path="/about" element={<AboutSection />} />
+        <Route path="/contact" element={<ContactUs />} />
         
         {/* The path MUST match the path defined in your Header courseCategories array */}
         <Route path="/courses/it-technical" element={<CourseItTechnical />} />
@@ -51,6 +53,7 @@ function App() {
         <Route path="/login" element={<LoginPage/>} />
         <Route path="/admin/students" element={<StudentsTab />} />
         <Route path="/admin/courses" element={<CourseManagement />} />
+
       </Routes>
 
       <FooterSection />
