@@ -1,162 +1,126 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check } from "lucide-react";
 
 export default function PricingSection() {
   const [isMonthly, setIsMonthly] = useState(false);
+  const [plans, setPlans] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const plans = [
-    {
-      name: "Accounting",
-      description:
-        "Perfect for commerce and accounts-related students looking to master financial tools.",
-      priceOff: "8,500",
-      priceOn: "6,000",
-      features: [
-        "2 Months Courses",
-        "Tally Prime & GST Training",
-        "Real-time financial scenarios",
-        "G-Tec Course Certification",
-        "100% Placement Assistance",
-      ],
-      highlighted: false,
-    },
-    {
-      name: "Full Stacks",
-      description:
-        "Ideal for tech and non-tech computer students building a career in software.",
-      priceOff: "60,000",
-      priceOn: "30,000",
-      features: [
-        "6 Months Courses",
-        "Full-Stack & Web Development",
-        "Hands-on coding labs",
-        "Live project building",
+  // ✅ FETCH OFFERS DYNAMICALLY FROM BACKEND
+  useEffect(() => {
+    const fetchOffers = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/offers");
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+          setPlans(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch offers:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-        "Interview & soft skills prep",
-      ],
-      highlighted: true,
-    },
-    {
-      name: "CAD",
-      description:
-        "Built for civil, mechanical, and architectural students to master design software.",
-      priceOff: "17,599",
-      priceOn: "12,500",
-      features: [
-        "2 Month Duration",
-        "AutoCAD & 3D Modeling Mastery",
-        "Structural design workshops",
-        "Professional portfolio building",
-        "G-Tec globally recognized cert",
-        "Industry expert mentorship",
-      ],
-      highlighted: false,
-    },
-  ];
+    fetchOffers();
+  }, []);
+
+  if (isLoading) {
+    return <div className="py-24 text-center text-gray-500 font-medium">Loading amazing offers...</div>;
+  }
+
+  if (plans.length === 0) {
+    return <div className="py-24 text-center text-gray-500 font-medium">No offers currently available.</div>;
+  }
 
   return (
-    <section className="w-full bg-white pb-24  px-6 md:px-12 lg:px-24 font-sans mt-25 md:mt-50">
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-          className="max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-clash tracking-tight text-gray-900 mb-4">
-            Flexible pricing plans
+    <section className="py-24 bg-white font-sans">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 tracking-tight">
+            Special <span className="text-blue-600">Offers</span>
           </h2>
-          <p className="text-lg md:text-xl pb-10 text-gray-600 font-normal">
-            Choose a plan that grows with you. Start for free and upgrade{" "}
-            <br className="hidden md:block" />
-            anytime for more features and support
+          <p className="text-lg text-gray-500 mb-8 max-w-2xl mx-auto">
+            Kickstart your career with our industry-leading courses at special discounted prices.
           </p>
-        </motion.div>
 
-        <div className="flex items-center justify-center mt-10 mb-16 gap-4">
-          <span
-            className={`text-sm md:text-base font-semibold transition-colors duration-300 ${!isMonthly ? "text-gray-900" : "text-gray-400"}`}>
-            Original Price
-          </span>
-
-          <button
-            onClick={() => setIsMonthly(!isMonthly)}
-            className={`relative w-16 h-8 flex items-center rounded-full p-1 transition-colors duration-300 focus:outline-none ${
-              isMonthly ? "bg-blue-600" : "bg-gray-300"
-            }`}>
-            <motion.div
-              layout
-              className="w-6 h-6 bg-white rounded-full shadow-md"
-              transition={{ type: "spring", stiffness: 600, damping: 30 }}
-              style={{
-                x: isMonthly ? 32 : 0,
-              }}
-            />
-          </button>
-
-          <span
-            className={`text-sm md:text-base font-semibold transition-colors duration-300 flex items-center gap-2 ${isMonthly ? "text-gray-900" : "text-gray-400"}`}>
-            Our Offer Price
-            <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">
-              Save some %
+          {/* Toggle Switch (Optional UI feature depending on your backend logic) */}
+          <div className="flex items-center justify-center gap-3">
+            <span className={`text-sm font-semibold ${!isMonthly ? "text-gray-900" : "text-gray-500"}`}>
+              Standard Plan
             </span>
-          </span>
+            <button
+              onClick={() => setIsMonthly(!isMonthly)}
+              className="relative w-14 h-7 bg-blue-600 rounded-full p-1 transition-colors duration-300 focus:outline-none"
+            >
+              <motion.div
+                layout
+                className="w-5 h-5 bg-white rounded-full shadow-sm"
+                animate={{ x: isMonthly ? 28 : 0 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              />
+            </button>
+            <span className={`text-sm font-semibold ${isMonthly ? "text-gray-900" : "text-gray-500"}`}>
+              Premium Plan
+            </span>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+        <div className="grid md:grid-cols-3 gap-8 items-stretch">
           {plans.map((plan, index) => (
             <motion.div
-              key={plan.name}
+              key={plan._id || index}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: index * 0.15 }}
-              className={`relative rounded-3xl p-8 flex flex-col h-full border transition-all duration-300
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className={`relative flex flex-col p-8 rounded-3xl transition-all duration-300 
                 ${
                   plan.highlighted
-                    ? "border-blue-600 bg-blue-900 text-white shadow-2xl scale-105 z-10"
-                    : "border-gray-200 bg-white text-gray-900 hover:shadow-xl hover:border-gray-300"
+                    ? "bg-blue-600 text-white shadow-xl shadow-blue-600/20 md:-translate-y-4"
+                    : "bg-white text-gray-900 border border-gray-100 shadow-lg shadow-gray-200/50 hover:border-gray-200 hover:shadow-xl"
                 }
-              `}>
+              `}
+            >
               {plan.highlighted && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-linear-to-r from-orange-400 to-pink-500 text-white text-xs font-bold uppercase tracking-wider py-1 px-4 rounded-full shadow-lg">
-                  Most Popular
+                <div className="absolute -top-4 left-0 right-0 flex justify-center">
+                  <span className="bg-gradient-to-r from-blue-400 to-blue-300 text-blue-950 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                    Most Popular
+                  </span>
                 </div>
               )}
 
-              <h3
-                className={`text-2xl font-bold mb-2 ${plan.highlighted ? "text-white" : "text-gray-900"}`}>
+              <h3 className={`text-2xl font-bold mb-2 ${plan.highlighted ? "text-white" : "text-gray-900"}`}>
                 {plan.name}
               </h3>
-              <p
-                className={`text-sm mb-8 leading-relaxed ${plan.highlighted ? "text-blue-100" : "text-gray-500"}`}>
+              <p className={`text-sm mb-6 ${plan.highlighted ? "text-blue-100" : "text-gray-500"}`}>
                 {plan.description}
               </p>
 
-              <div className="flex items-baseline justify-center">
-                <span className="text-4xl font-extrabold tracking-tight mr-1">
+              <div className="flex items-baseline mb-2">
+                <span className={`text-5xl font-extrabold tracking-tight ${plan.highlighted ? "text-white" : "text-gray-900"}`}>
                   ₹
                 </span>
-
-                <div className="overflow-hidden h-14 flex items-center justify-center">
+                
+                {/* Value animation wrapper */}
+                <div className="relative overflow-hidden h-[3.5rem] w-full flex items-center ml-1">
                   <AnimatePresence mode="wait">
-                    <motion.span
-                      key={isMonthly ? "monthly" : "annual"}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.2, ease: "easeOut" }}
-                      className={`text-5xl font-extrabold tracking-tighter inline-block ${
-                        plan.highlighted ? "text-white" : "text-gray-900"
-                      }`}>
+                    <motion.div
+                      key={isMonthly ? plan.priceOn : plan.priceOff}
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: -20, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className={`text-5xl font-extrabold tracking-tight absolute ${plan.highlighted ? "text-white" : "text-gray-900"}`}
+                    >
                       {isMonthly ? plan.priceOn : plan.priceOff}
-                    </motion.span>
+                    </motion.div>
                   </AnimatePresence>
                 </div>
 
-                <span
-                  className={`ml-1 font-medium text-4xl ${plan.highlighted ? "text-blue-200" : "text-blue-600"}`}>
+                <span className={`ml-1 font-medium text-4xl ${plan.highlighted ? "text-blue-200" : "text-blue-600"}`}>
                   /-
                 </span>
               </div>
@@ -168,19 +132,18 @@ export default function PricingSection() {
                       ? "bg-white text-blue-600 hover:bg-gray-50 hover:scale-[1.02]"
                       : "bg-gray-900 text-white hover:bg-gray-800 hover:scale-[1.02]"
                   }
-                `}>
+                `}
+              >
                 Get started
               </button>
 
               <ul className="flex flex-col gap-4 mt-auto">
                 {plan.features.map((feature, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <div
-                      className={`mt-0.5 shrink-0 ${plan.highlighted ? "text-blue-300" : "text-green-500"}`}>
+                    <div className={`mt-0.5 shrink-0 ${plan.highlighted ? "text-blue-300" : "text-green-500"}`}>
                       <Check size={18} strokeWidth={3} />
                     </div>
-                    <span
-                      className={`text-sm font-medium ${plan.highlighted ? "text-blue-50" : "text-gray-600"}`}>
+                    <span className={`text-sm font-medium ${plan.highlighted ? "text-blue-50" : "text-gray-600"}`}>
                       {feature}
                     </span>
                   </li>

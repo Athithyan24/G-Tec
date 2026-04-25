@@ -60,6 +60,17 @@ const courseSchema = new mongoose.Schema({
 
 const Course = mongoose.model('Course', courseSchema);
 
+const offerSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  description: { type: String, required: true },
+  priceOff: { type: String, required: true }, // E.g., "8,500"
+  priceOn: { type: String, required: true },  // E.g., "6,000"
+  features: [{ type: String }],               // Array of strings (the bullet points)
+  highlighted: { type: Boolean, default: false } // Determines if it's the blue highlighted card
+});
+
+const Offer = mongoose.model('Offer', offerSchema);
+
 // 1. Get All Countries
 app.get('/api/countries', (req, res) => {
   const countries = Country.getAllCountries().map(c => ({
@@ -128,6 +139,36 @@ app.get('/api/india/pincode/:pin', async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
+{/* ---------- Offers Section ---------- */}
+
+app.get('/api/offers', async (req, res) => {
+  try {
+    const offers = await Offer.find();
+    res.json(offers);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/offers', async (req, res) => {
+  try {
+    const newOffer = new Offer(req.body);
+    await newOffer.save();
+    res.json({ success: true, message: "Offer added successfully!" });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.delete('/api/offers/:id', async (req, res) => {
+  try {
+    await Offer.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: "Offer deleted!" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
