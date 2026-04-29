@@ -1,31 +1,44 @@
 import React, { useState, useEffect } from "react";
-import { Plus, Trash2, Tag, FileText, Check, X, IndianRupee, Save, Star } from "lucide-react";
+import { Plus, Trash2, Tag, FileText, Check, X, IndianRupee, Save, Star, Link, Edit } from "lucide-react";
 
 export default function AdminOffers() {
   const [offers, setOffers] = useState([]);
+  const [allCourses, setAllCourses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // ✅ NEW: State to track if we are editing an existing offer
+  const [editingId, setEditingId] = useState(null);
 
   const [formData, setFormData] = useState({
-    name: "", description: "", priceOff: "", priceOn: "", features: [""], highlighted: false,
+    name: "", description: "", priceOff: "", priceOn: "", features: [""], highlighted: false, linkedCategory: "", linkedCourseTitle: ""
   });
 
-  const fetchOffers = async () => {
+  const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/offers");
-      const data = await response.json();
-      setOffers(data);
+      const [offersRes, coursesRes] = await Promise.all([
+        fetch("http://localhost:5000/api/offers"),
+        fetch("http://localhost:5000/api/courses")
+      ]);
+      const offersData = await offersRes.json();
+      const coursesData = await coursesRes.json();
+      setOffers(offersData);
+      setAllCourses(coursesData);
     } catch (error) {
-      console.error("Error fetching offers:", error);
+      console.error("Error fetching data:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => { fetchOffers(); }, []);
+  useEffect(() => { fetchData(); }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
+    setFormData(prev => {
+      const newData = { ...prev, [name]: type === "checkbox" ? checked : value };
+      if (name === "linkedCategory") newData.linkedCourseTitle = "";
+      return newData;
+    });
   };
 
   const handleFeatureChange = (index, value) => {
@@ -41,23 +54,48 @@ export default function AdminOffers() {
     setFormData({ ...formData, features: updatedFeatures });
   };
 
+  // ✅ NEW: Function to load an offer into the form for editing
+  const handleEditClick = (offer) => {
+    setEditingId(offer._id);
+    setFormData({
+      name: offer.name || "",
+      description: offer.description || "",
+      priceOff: offer.priceOff || "",
+      priceOn: offer.priceOn || "",
+      features: offer.features?.length ? offer.features : [""],
+      highlighted: offer.highlighted || false,
+      linkedCategory: offer.linkedCategory || "",
+      linkedCourseTitle: offer.linkedCourseTitle || ""
+    });
+    // Smooth scroll back to the top form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // ✅ UPDATED: Submit handles both Creating (POST) and Updating (PUT)
   const handleSubmit = async (e) => {
     e.preventDefault();
     const cleanedData = { ...formData, features: formData.features.filter(f => f.trim() !== "") };
 
     try {
-      const response = await fetch("http://localhost:5000/api/offers", {
-        method: "POST",
+      const url = editingId 
+        ? `http://localhost:5000/api/offers/${editingId}` 
+        : "http://localhost:5000/api/offers";
+      const method = editingId ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method: method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(cleanedData),
       });
 
       if (response.ok) {
-        setFormData({ name: "", description: "", priceOff: "", priceOn: "", features: [""], highlighted: false });
-        fetchOffers();
+        // Reset form and editing state
+        setFormData({ name: "", description: "", priceOff: "", priceOn: "", features: [""], highlighted: false, linkedCategory: "", linkedCourseTitle: "" });
+        setEditingId(null);
+        fetchData();
       }
     } catch (error) {
-      console.error("Error adding offer:", error);
+      console.error("Error saving offer:", error);
     }
   };
 
@@ -65,16 +103,14 @@ export default function AdminOffers() {
     if (!window.confirm("Delete this offer?")) return;
     try {
       const response = await fetch(`http://localhost:5000/api/offers/${id}`, { method: "DELETE" });
-      if (response.ok) fetchOffers();
+      if (response.ok) fetchData();
     } catch (error) {
       console.error("Error deleting offer:", error);
     }
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto font-sans">
-      
-      {/* Header */}
+    <div className="p-6 max-w-7xl pb-50 mx-auto font-sans">
       <div className="flex items-center gap-3 mb-8">
         <Tag className="text-blue-600" size={28} />
         <h1 className="text-3xl font-bold text-gray-900">Manage Offers</h1>
@@ -82,11 +118,13 @@ export default function AdminOffers() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         
-        {/* LEFT COLUMN: The Form (Matches Course Management width & style) */}
+        {/* LEFT COLUMN: The Form */}
         <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-200 p-6 h-fit">
           <div className="flex items-center gap-2 mb-6 border-b pb-4">
-            <Plus className="text-blue-600" size={24} />
-            <h2 className="text-xl font-bold text-gray-800">Create New Offer</h2>
+            {editingId ? <Edit className="text-amber-500" size={24} /> : <Plus className="text-blue-600" size={24} />}
+            <h2 className="text-xl font-bold text-gray-800">
+              {editingId ? "Edit Offer" : "Create New Offer"}
+            </h2>
           </div>
           
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -120,6 +158,31 @@ export default function AdminOffers() {
               </div>
             </div>
 
+            <div className="p-4 bg-indigo-50/50 border border-indigo-100 rounded-xl mt-2">
+              <h3 className="text-sm font-bold text-indigo-900 mb-3 flex items-center gap-2">
+                <Link size={16} className="text-indigo-600"/> Link to Specific Course Module
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <select name="linkedCategory" value={formData.linkedCategory} onChange={handleChange} required
+                  className="p-2.5 w-full bg-white border border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-600 outline-none text-sm">
+                  <option value="">Select Category...</option>
+                  <option value="accounting">Accounting</option>
+                  <option value="civil">Civil</option>
+                  <option value="designing">Designing</option>
+                  <option value="it-technical">IT Technical</option>
+                  <option value="it-non-technical">IT Non-Technical</option>
+                </select>
+
+                <select name="linkedCourseTitle" value={formData.linkedCourseTitle} onChange={handleChange} required disabled={!formData.linkedCategory}
+                  className="p-2.5 w-full bg-white border border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-600 outline-none text-sm disabled:opacity-50">
+                  <option value="">Select Target Course...</option>
+                  {allCourses.filter(c => c.category === formData.linkedCategory).map(c => (
+                    <option key={c._id} value={c.title}>{c.title}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             <div className="p-4 bg-gray-50/50 border border-gray-200 rounded-xl mt-2">
               <h3 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
                 <Check size={16} className="text-blue-600"/> Feature Highlights
@@ -148,17 +211,33 @@ export default function AdminOffers() {
                 <span className="text-sm font-bold text-amber-900 flex items-center gap-1 group-hover:text-amber-700">
                   <Star size={16} className="fill-amber-500 text-amber-500"/> Highlight this Offer
                 </span>
-                <span className="text-xs text-amber-700/70">Displays as the "Most Popular" blue card on the main website.</span>
+                <span className="text-xs text-amber-700/70">Displays as the "Most Popular" blue card.</span>
               </div>
             </label>
 
-            <button type="submit" className="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-md shadow-blue-600/20 mt-2">
-              <Save size={18} /> Publish Offer
-            </button>
+            {/* ✅ UPDATED: Submit Button Layout with Cancel Option */}
+            <div className="flex gap-3 mt-2">
+              <button type="submit" className={`flex-1 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md ${editingId ? 'bg-amber-500 hover:bg-amber-600 shadow-amber-500/20' : 'bg-blue-600 hover:bg-blue-700 shadow-blue-600/20'}`}>
+                <Save size={18} /> {editingId ? "Update Offer" : "Publish Offer"}
+              </button>
+              
+              {editingId && (
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    setEditingId(null);
+                    setFormData({ name: "", description: "", priceOff: "", priceOn: "", features: [""], highlighted: false, linkedCategory: "", linkedCourseTitle: "" });
+                  }}
+                  className="px-6 py-3 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-all"
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
           </form>
         </div>
 
-        {/* RIGHT COLUMN: Active Offers List (Matches Course Management sticky list & hover styles) */}
+        {/* RIGHT COLUMN: Active Offers List */}
         <div className="lg:col-span-1 flex flex-col h-[calc(100vh-100px)] sticky top-6">
           <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
             Active Offers <span className="text-sm bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full">{offers.length}</span>
@@ -173,7 +252,7 @@ export default function AdminOffers() {
               </div>
             ) : (
               offers.map((offer) => (
-                <div key={offer._id} className="p-4 rounded-2xl border border-gray-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all group relative pr-12">
+                <div key={offer._id} className={`p-4 rounded-2xl border transition-all group relative pr-12 ${editingId === offer._id ? 'border-amber-400 bg-amber-50/30' : 'border-gray-100 hover:border-blue-200 hover:bg-blue-50/30'}`}>
                   
                   {offer.highlighted ? (
                     <span className="text-[9px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded uppercase mb-2 flex items-center gap-1 w-fit">
@@ -193,8 +272,11 @@ export default function AdminOffers() {
                     <span className="text-[10px] font-medium text-gray-400 line-through">₹{offer.priceOff}</span>
                   </div>
 
-                  {/* Hover Actions (Matches exactly with CourseManagement) */}
-                  <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  {/* ✅ NEW: Added Edit Button Here */}
+                  <div className={`absolute top-4 right-4 flex flex-col gap-2 transition-opacity ${editingId === offer._id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                    <button onClick={() => handleEditClick(offer)} className="text-gray-300 hover:text-amber-500 transition-colors bg-white p-1.5 rounded-md shadow-sm border border-gray-100">
+                      <Edit size={14} className={editingId === offer._id ? "text-amber-500" : ""} />
+                    </button>
                     <button onClick={() => handleDelete(offer._id)} className="text-gray-300 hover:text-red-500 transition-colors bg-white p-1.5 rounded-md shadow-sm border border-gray-100">
                       <Trash2 size={14} />
                     </button>
@@ -204,7 +286,6 @@ export default function AdminOffers() {
             )}
           </div>
         </div>
-
       </div>
     </div>
   );

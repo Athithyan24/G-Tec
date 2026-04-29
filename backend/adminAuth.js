@@ -3,7 +3,14 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
+require('dotenv').config();
+
 const router = express.Router();
+
+const username= process.env.USER_NAME;
+const password = process.env.PASSWORD;
+const JWT_SECRET = process.env.JWT_SECRET;
+const HASHED_SECRET = process.env.HASHED_SECRET;
 
 const adminSchema = new mongoose.Schema({
   username: { type: String, required: true },
@@ -12,17 +19,17 @@ const adminSchema = new mongoose.Schema({
 });
 const Admin = mongoose.model('Admin', adminSchema);
 
-const JWT_SECRET = "gtec_super_secret_key_2026";
+
 
 router.post('/setup', async (req, res) => {
   const adminExists = await Admin.findOne();
   if (adminExists) return res.status(400).json({ message: "Admin already exists!" });
 
-  const hashedPassword = await bcrypt.hash("admin123", 10);
-  const hashedSecret = await bcrypt.hash("GTEC-MASTER-KEY", 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedSecret = await bcrypt.hash(HASHED_SECRET, 10);
 
   const newAdmin = new Admin({
-    username: "gtec_admin",
+    username: username,
     password: hashedPassword,
     secretKey: hashedSecret
   });
@@ -69,11 +76,11 @@ router.get('/setup', async (req, res) => {
     // This deletes the old admin so we can start fresh
     await Admin.deleteMany({}); 
 
-    const hashedPassword = await bcrypt.hash("admin123", 10);
-    const hashedSecret = await bcrypt.hash("GTEC-MASTER-KEY", 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedSecret = await bcrypt.hash(HASHED_SECRET, 10);
 
     const newAdmin = new Admin({
-      username: "gtec_admin",
+      username: username,
       password: hashedPassword,
       secretKey: hashedSecret
     });
@@ -84,8 +91,8 @@ router.get('/setup', async (req, res) => {
       message: "Admin Reset Successful!",
       loginDetails: {
         url: "http://localhost:3000/login",
-        user: "gtec_admin",
-        pass: "admin123"
+        user: username,
+        pass: password
       }
     });
   } catch (err) {

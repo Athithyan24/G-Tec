@@ -1,25 +1,34 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import { useEffect } from "react";
-import './App.css';
+import "./App.css";
 
 // Import your components
-import HeaderSection from './components/Header';
-import HomeSection from './components/HomeSection';
-import FooterSection from './components/Footer';
-import EnrollmentForm from './components/EnrollmentForm';
-import AboutSection from './AboutUsComponents/Aboutus';
+import HeaderSection from "./Main/Header";
+import HomeSection from "./HomeComponents/HomeSection";
+import FooterSection from "./Main/Footer";
+import EnrollmentForm from "./Enrollment/EnrollmentForm";
+import AboutSection from "./AboutUsComponents/Aboutus";
+import Course from "./Course/Course"
 import ContactUs from "./ContactUs/ContactUs";
+import Chatbot from "./Chatbot/Chatbot";
 
 // 1. IMPORT YOUR NEW COURSE COMPONENT HERE
 // Make sure the file path matches where you saved it!
-import CourseItTechnical from './CoursesSection/CourseItTechnical';
-import CourseItNonTechnical from './CoursesSection/CourseItNonTechnical';
-import CourseDesigning from './CoursesSection/CourseDesigning'; 
-import CourseAccounting from './CoursesSection/CourseAccounting';
-import CourseCivil from './CoursesSection/CourseCivil';
-import LoginPage from './LoginPage';
-import StudentsTab from './StudentsDetails/StudentsTab'
-import WebUpdater from './StudentsDetails/WebUpdater'
+import CourseItTechnical from "./CoursesSection/CourseItTechnical";
+import CourseItNonTechnical from "./CoursesSection/CourseItNonTechnical";
+import CourseDesigning from "./CoursesSection/CourseDesigning";
+import CourseAccounting from "./CoursesSection/CourseAccounting";
+import CourseCivil from "./CoursesSection/CourseCivil";
+import LoginPage from "./LoginPage";
+import StudentsTab from "./StudentsDetails/StudentsTab";
+import StudentsEnrollment from "./StudentsDetails/StudentsEnrollment";
+import WebUpdater from "./StudentsDetails/WebUpdater";
+import EnquiryTab from "./Enrollment/EnquiryTab"
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -35,27 +44,32 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
-      
+
       <HeaderSection />
 
       <Routes>
         <Route path="/" element={<HomeSection />} />
         <Route path="/about" element={<AboutSection />} />
         <Route path="/contact" element={<ContactUs />} />
-        
+        <Route path="/courses" element={<Course />} />
+
         {/* The path MUST match the path defined in your Header courseCategories array */}
         <Route path="/courses/it-technical" element={<CourseItTechnical />} />
-        <Route path="/courses/it-non-technical" element={<CourseItNonTechnical />} />
-        <Route path="/courses/designing" element={< CourseDesigning/>} />
-        <Route path="/courses/accounting" element={< CourseAccounting/>} />
-        <Route path="/courses/civil" element={< CourseCivil/>} />
+        <Route
+          path="/courses/it-non-technical"
+          element={<CourseItNonTechnical />}
+        />
+        <Route path="/courses/designing" element={<CourseDesigning />} />
+        <Route path="/courses/accounting" element={<CourseAccounting />} />
+        <Route path="/courses/civil" element={<CourseCivil />} />
         <Route path="/enroll" element={<EnrollmentForm />} />
-        <Route path="/login" element={<LoginPage/>} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/admin/students" element={<StudentsTab />} />
+        <Route path="/admin/enrolled-log" element={<StudentsEnrollment />} />
         <Route path="/admin/courses" element={<WebUpdater />} />
-
+        <Route path="/admin/enquiry" element={<EnquiryTab />} />
       </Routes>
-
+      <Chatbot />
       <FooterSection />
     </Router>
   );

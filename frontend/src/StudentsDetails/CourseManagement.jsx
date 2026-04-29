@@ -111,7 +111,7 @@ export default function CourseManagement() {
   const labelClass = "text-[11px] font-bold text-gray-500 uppercase flex items-center gap-1.5 mb-1.5 tracking-wider";
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8 pt-40 pb-60 font-sans">
+    <div className="min-h-screen bg-white p-8 pt-40 pb-30 font-sans">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* LEFT COLUMN */}

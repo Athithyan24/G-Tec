@@ -9,8 +9,11 @@ import {
   BookOpen,
   Award,
 } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Civil() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [selectedCourse, setSelectedCourse] = useState(null);
 
   const [courses, setCourses] = useState([]);
@@ -24,6 +27,20 @@ export default function Civil() {
         setCourses(civilCourses);
       });
   }, []);
+
+  useEffect(() => {
+    if (courses.length > 0 && location.state?.autoOpenCourse) {
+      const courseToOpen = courses.find(
+        (c) => c.title === location.state.autoOpenCourse
+      );
+      if (courseToOpen) {
+        setSelectedCourse(courseToOpen);
+        
+        // Optional: Clean up the state so it doesn't re-open if they refresh the page
+        window.history.replaceState({}, document.title);
+      }
+    }
+  }, [courses, location.state]);
 
   const smoothTransition = {
     type: "tween",
@@ -41,9 +58,9 @@ export default function Civil() {
             <p className="text-blue-600 font-bold text-sm tracking-[0.2em] uppercase mb-6">
               Department of Civil, Computer Science, Design & Electrical
             </p>
-            <h1 className="text-5xl md:text-7xl lg:text-[7rem] font-clash font-bold tracking-tighter leading-none uppercase">
+            <h1 className="text-3xl md:text-4xl lg:text-[4rem] font-clash font-bold tracking-tighter leading-none uppercase">
               CAD / 3D / 2D{" "}
-              <span className="text-zinc-400 font-light text-3xl md:text-5xl lg:text-7xl align-top ml-2 lg:ml-4">
+              <span className="text-zinc-400 font-light text-xl md:text-3xl lg:text-5xl align-top ml-2 lg:ml-4">
                 ({courses.length.toString().padStart(2, "0")})
               </span>
             </h1>
@@ -211,7 +228,17 @@ export default function Civil() {
 
                     {/* ENROLLMENT ACTION */}
                     <div className="flex flex-col sm:flex-row gap-4 items-center border-t border-zinc-100 pt-8">
-                      <button className="w-full sm:w-auto px-10 py-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-xl shadow-blue-200">
+                      <button
+                        onClick={() => {
+                          // Redirect to enrollment page and pass the selected course data
+                          navigate("/enroll", {
+                            state: {
+                              courseCategory: "civil",
+                              specificCourse: selectedCourse.title,
+                            },
+                          });
+                        }}
+                        className="w-full sm:w-auto px-10 py-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-xl shadow-blue-200">
                         Enroll Now
                       </button>
                       <p className="text-zinc-400 text-xs font-medium text-center sm:text-left">

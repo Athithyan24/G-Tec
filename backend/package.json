@@ -7,6 +7,9 @@
     "axios": "^1.15.2",
     "bcrypt": "^6.0.0",
     "country-state-city": "^3.2.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^8.4.1",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.5.0",
     "nodemailer": "^8.0.6"

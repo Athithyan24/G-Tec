@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   ArrowRight,
   Clock,
@@ -13,6 +13,7 @@ import {
 
 export default function ItNonTechnical() {
   const navigate = useNavigate();
+  const location = useLocation ();
   const [selectedCourse, setSelectedCourse] = useState(null);
 
   const [courses, setCourses] = useState([]);
@@ -28,6 +29,20 @@ export default function ItNonTechnical() {
         setCourses(itnontechnicalCourses);
       });
   }, []);
+
+  useEffect(() => {
+    if (courses.length > 0 && location.state?.autoOpenCourse) {
+      const courseToOpen = courses.find(
+        (c) => c.title === location.state.autoOpenCourse
+      );
+      if (courseToOpen) {
+        setSelectedCourse(courseToOpen);
+        
+        // Optional: Clean up the state so it doesn't re-open if they refresh the page
+        window.history.replaceState({}, document.title);
+      }
+    }
+  }, [courses, location.state]);
 
   const smoothTransition = {
     type: "tween",
