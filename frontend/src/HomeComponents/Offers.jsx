@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function PricingSection() {
   const navigate = useNavigate();
-  const [isMonthly, setIsMonthly] = useState(false);
+  const [isMonthly, setIsMonthly] = useState(true);
   const [plans, setPlans] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
