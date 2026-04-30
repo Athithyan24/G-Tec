@@ -153,7 +153,10 @@ export default function Hero() {
           transition={{ delay: 0.2, duration: 1, ease: "easeOut" }}
           className="mt-20 w-full max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 px-4"
         >
-          <div className="relative flex-1 rounded-[2.5rem] bg-white shadow-2xl overflow-hidden aspect-video border border-gray-100 flex">
+          {/* VIDEO DASHBOARD:
+            Added 'hidden lg:flex' to hide on mobile and only show on large screens. 
+          */}
+          <div className="hidden lg:flex relative flex-1 rounded-[2.5rem] bg-white shadow-2xl overflow-hidden aspect-video border border-gray-100">
             <div className="hidden md:flex flex-col items-center py-6 w-16 bg-white border-r border-gray-100 z-20 shrink-0 gap-6 text-gray-400">
               <div className="w-8 h-8 bg-black p-1 rounded-md mb-4 flex items-center justify-center text-white text-xs font-bold">
                 <img
@@ -269,7 +272,11 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="hidden lg:flex flex-col w-85 shrink-0 bg-white rounded-[2.5rem] shadow-2xl p-6 border border-gray-100 relative">
+          {/* NAGERCOIL DASHBOARD:
+            Changed from 'hidden lg:flex ... w-85' to 'flex ... w-full lg:w-85'.
+            This makes it visible and full-width on mobile, while staying w-85 on desktop.
+          */}
+          <div className="flex flex-col w-full lg:w-85 shrink-0 bg-white rounded-[2.5rem] shadow-2xl p-6 border border-gray-100 relative">
             {/* Header */}
             <div className="flex justify-between items-center mb-8">
               <span className="font-bold text-xl text-gray-900 tracking-tight">
@@ -311,6 +318,7 @@ export default function Hero() {
             </div>
           </div>
         </motion.div>
+        
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}

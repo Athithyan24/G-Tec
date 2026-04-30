@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Info, Phone, Users, MapPin, BookOpen, MessageCircleQuestionMark, ChevronDown, LayoutGrid, User, Settings, LogOut } from "lucide-react";
+import { Info, Phone, Users, MapPin, BookOpen, MessageCircleQuestionMark, ChevronDown, LayoutGrid, User, Settings, LogOut, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function HeaderSection() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
+  
+  // NEW: State to control the mobile menu
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
@@ -31,6 +34,8 @@ export default function HeaderSection() {
       const currentScrollY = window.scrollY;
       if (currentScrollY > lastScrollY && currentScrollY > 50) {
         setIsVisible(false);
+        // Close mobile menu if user starts scrolling down
+        setIsMobileMenuOpen(false); 
       } else {
         setIsVisible(true);
       }
@@ -40,22 +45,30 @@ export default function HeaderSection() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
+  // Prevent scrolling when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [isMobileMenuOpen]);
+
   return (
     <>
       <header
-        className={`fixed w-full top-0 z-100 bg-blue-900/95 backdrop-blur-md border-b border-white/10 transition-all duration-500 ease-in-out ${
-          isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+        className={`fixed w-full top-0 z-[100] bg-blue-900/95 backdrop-blur-md border-b border-white/10 transition-transform duration-500 ease-in-out ${
+          isVisible ? "translate-y-0" : "-translate-y-full"
         }`}
       >
-        {/* Expanded max-width from 7xl to [1450px] to give the admin menu plenty of room! */}
-        <div className="max-w-362.5 mx-auto px-4 lg:px-8 h-30 flex items-center justify-between">
+        <div className="max-w-[1450px] mx-auto px-4 lg:px-8 h-28 flex items-center justify-between">
           
-          {/* Logo Section - ADDED 'shrink-0' so it NEVER gets squished. Left the MapPin block exactly as you fixed it. */}
-          <Link to="/" className="flex items-center gap-3 cursor-pointer shrink-0">
+          {/* Logo Section - Preserved exactly as requested */}
+          <Link to="/" className="flex items-center gap-3 cursor-pointer shrink-0" onClick={() => setIsMobileMenuOpen(false)}>
             <img
               src="/logo1.webp"
               alt="G-Tech Logo"
-              className="h-25 w-auto object-contain"
+              className="h-24 w-auto object-contain"
             />
             <div className="flex text-white mt-1">
               <MapPin size={22} className="mr-1" />
@@ -65,9 +78,8 @@ export default function HeaderSection() {
             </div>
           </Link>
 
-          {/* Center Navigation - Replaced heavy spacing with dynamic gaps and forced whitespace-nowrap */}
+          {/* Desktop Navigation (Hidden on Mobile) */}
           <nav className="hidden lg:flex items-center gap-4 xl:gap-7 whitespace-nowrap">
-            
             <div className="relative group flex items-center h-28">
               <Link 
                 to="/courses" 
@@ -78,7 +90,6 @@ export default function HeaderSection() {
                 <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </Link>
 
-              {/* Courses Dropdown */}
               <div className="absolute top-[80%] left-1/2 -translate-x-1/2 w-[320px] bg-white rounded-b-2xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-0 overflow-hidden z-[100]">
                 <div className="p-3 flex flex-col">
                   {courseCategories.map((category, index) => (
@@ -96,10 +107,7 @@ export default function HeaderSection() {
                     </Link>
                   ))}
                   <div className="mt-2 pt-2 border-t border-gray-50">
-                    <Link 
-                      to="/courses" 
-                      className="text-center block py-2 text-[10px] font-bold text-blue-600 hover:text-blue-800 uppercase tracking-wider"
-                    >
+                    <Link to="/courses" className="text-center block py-2 text-[10px] font-bold text-blue-600 hover:text-blue-800 uppercase tracking-wider">
                       View All Course Categories
                     </Link>
                   </div>
@@ -109,15 +117,12 @@ export default function HeaderSection() {
 
             {isAdmin && (
               <div className="flex items-center gap-4 xl:gap-6 border-x border-white/10 px-4 xl:px-6">
-                
-                {/* STUDENTS DROPDOWN */}
                 <div className="relative group flex items-center h-28">
                   <button className="flex items-center gap-1.5 text-[15px] xl:text-[16px] font-bold text-yellow-400 hover:text-yellow-300 whitespace-nowrap cursor-pointer transition-colors">
                     <Users size={18} /> 
                     Students
                     <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
                   </button>
-
                   <div className="absolute top-[80%] left-0 w-[260px] bg-white rounded-2xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 overflow-hidden z-[110]">
                     <div className="p-2 flex flex-col gap-1">
                       <Link to="/admin/enrollment-log" className="group/item flex flex-col p-3 rounded-xl hover:bg-blue-50 transition-colors">
@@ -151,8 +156,8 @@ export default function HeaderSection() {
             </Link>
           </nav>
 
-          {/* Right Action Buttons - Added 'shrink-0' to lock alignment */}
-          <div className="flex items-center gap-4 xl:gap-6 shrink-0">
+          {/* Desktop Right Action Buttons (Hidden on Mobile) */}
+          <div className="hidden lg:flex items-center gap-4 xl:gap-6 shrink-0">
             {isAdmin ? (
               <button 
                 onClick={handleLogout}
@@ -166,7 +171,6 @@ export default function HeaderSection() {
               </Link>
             )}
             
-            {/* ENROLL NOW - Increased padding (px-10 py-3.5) and text size */}
             <Link 
               to="/enroll" 
               className="relative group overflow-hidden flex items-center gap-2 bg-white text-blue-900 px-10 py-3.5 rounded-full text-base xl:text-lg font-black transition-all duration-300 whitespace-nowrap shadow-md hover:shadow-blue-500/20"
@@ -176,6 +180,82 @@ export default function HeaderSection() {
               <div className="absolute group-hover:-top-1 group-hover:-right-2 z-0 w-8 h-8 rounded-full group-hover:scale-150 duration-700 right-32 top-6 bg-pink-400/40"></div>
               <span className="relative z-10">Enroll Now</span>
             </Link>
+          </div>
+
+          {/* NEW: Mobile Hamburger Menu Toggle */}
+          <button 
+            className="lg:hidden text-white p-2 hover:text-blue-300 transition-colors shrink-0"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X size={32} /> : <Menu size={32} />}
+          </button>
+
+        </div>
+
+        {/* NEW: Mobile Dropdown Menu */}
+        <div 
+          className={`lg:hidden absolute top-28 left-0 w-full bg-blue-900/98 backdrop-blur-xl border-t border-white/10 transition-all duration-300 ease-in-out shadow-2xl ${
+            isMobileMenuOpen ? "max-h-[85vh] opacity-100 visible overflow-y-auto" : "max-h-0 opacity-0 invisible overflow-hidden"
+          }`}
+        >
+          <div className="flex flex-col p-6 gap-6">
+            
+            {/* Standard Links */}
+            <Link to="/courses" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-semibold text-white">
+              <LayoutGrid size={22} className="text-blue-300" /> Courses
+            </Link>
+            
+            <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-semibold text-white">
+              <Info size={22} className="text-blue-300" /> About
+            </Link>
+            
+            <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-semibold text-white">
+              <Phone size={22} className="text-blue-300" /> Contact
+            </Link>
+
+            {/* Admin Links */}
+            {isAdmin && (
+              <div className="flex flex-col gap-5 pt-5 border-t border-white/10">
+                <span className="text-xs font-bold text-yellow-400 uppercase tracking-wider">Admin Panel</span>
+                <Link to="/admin/enrollment-log" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-semibold text-white">
+                  <Users size={22} className="text-yellow-400" /> Enrollment Log
+                </Link>
+                <Link to="/admin/students" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-semibold text-white">
+                  <Users size={22} className="text-yellow-400" /> Manage Students
+                </Link>
+                <Link to="/admin/courses" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-semibold text-white">
+                  <Settings size={22} className="text-yellow-400" /> Manage Courses
+                </Link>
+                <Link to="/admin/enquiry" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-semibold text-white">
+                  <MessageCircleQuestionMark size={22} className="text-yellow-400" /> Enquiry
+                </Link>
+              </div>
+            )}
+
+            {/* Mobile Action Buttons */}
+            <div className="flex flex-col gap-4 mt-2 pt-6 border-t border-white/10">
+              {isAdmin ? (
+                <button 
+                  onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}
+                  className="flex items-center justify-center gap-2 bg-red-500/10 text-red-500 px-5 py-3.5 rounded-xl text-base font-bold border border-red-500/20"
+                >
+                  <LogOut size={20}/> Logout
+                </button>
+              ) : (
+                <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-center gap-2 bg-white/5 text-white px-5 py-3.5 rounded-xl text-base font-bold border border-white/10">
+                  <User size={20} /> Login
+                </Link>
+              )}
+              
+              <Link 
+                to="/enroll" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-center gap-2 bg-white text-blue-900 px-5 py-3.5 rounded-xl text-lg font-black shadow-lg"
+              >
+                Enroll Now
+              </Link>
+            </div>
+
           </div>
         </div>
       </header>

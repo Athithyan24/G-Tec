@@ -35,7 +35,7 @@ export default function LoginPage() {
         setError(data.message || "Invalid credentials");
       }
     } catch (err) {
-      setError("Server connection failed. Is the backend running?");
+      setError("Server connection failed. Is the backend running?"+err);
     } finally {
       setLoading(false);
     }
