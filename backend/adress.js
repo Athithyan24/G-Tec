@@ -110,6 +110,16 @@ const inquirySchema = new mongoose.Schema({
 });
 const Inquiry = mongoose.model('Inquiry', inquirySchema);
 
+const gameScoreSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  phone: { type: String, required: true },
+  course: { type: String, required: true },
+  score: { type: Number, required: true },
+  couponCode: { type: String, required: true },
+}, { timestamps: true });
+
+const GameScore = mongoose.model('GameScore', gameScoreSchema);
+
 // 1. Get All Countries
 app.get('/api/countries', (req, res) => {
   const countries = Country.getAllCountries().map(c => ({
@@ -243,6 +253,29 @@ app.delete('/api/offers/:id', async (req, res) => {
     res.json({ success: true, message: "Offer deleted!" });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+{/*------------------ Game Logic Section ---------------*/}
+
+app.post('/api/gamescores/add', async (req, res) => {
+  try {
+    const newScore = new GameScore(req.body);
+    await newScore.save();
+    res.status(201).json({ success: true, message: "Game score saved!" });
+  } catch (error) {
+    console.error("Error saving game score:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
+app.get('/api/gamescores/all', async (req, res) => {
+  try {
+    const scores = await GameScore.find().sort({ createdAt: -1 }); 
+    res.status(200).json(scores);
+  } catch (error) {
+    console.error("Error fetching game scores:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
 

@@ -4,18 +4,16 @@ import { MapPin, Phone, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function FooterSection() {
-  // Master container animation for the cards
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15, // Delay between each card appearing
+        staggerChildren: 0.15, 
       },
     },
   };
 
-  // Animation for each individual card
   const cardVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
@@ -25,14 +23,13 @@ export default function FooterSection() {
     },
   };
 
-  // Stagger animation for the social icons inside the first card
   const iconContainerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.4, // Wait for the card to slide up first
+        delayChildren: 0.4, 
       },
     },
   };
@@ -47,20 +44,19 @@ export default function FooterSection() {
     },
   };
 
-  // NEW: Stagger animation for the list items (Nav, Contact, Campus)
   const listContainerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.5, // Starts slightly after the card appears
+        delayChildren: 0.5,
       },
     },
   };
 
   const listItemVariants = {
-    hidden: { opacity: 0, x: -15 }, // Start slightly to the left and invisible
+    hidden: { opacity: 0, x: -15 },
     visible: {
       opacity: 1,
       x: 0,
@@ -72,7 +68,6 @@ export default function FooterSection() {
     <footer className="relative z-50 w-full bg-[#0a0a0a] text-white pt-12 md:pt-20 pb-8 md:pb-12 px-4 md:px-12 lg:px-24 font-sans overflow-hidden">
       <div className="max-w-7xl mx-auto">
         
-        {/* Bento Grid: 2 columns on mobile, 4 on desktop */}
         <motion.div 
           variants={containerVariants}
           initial="hidden"
@@ -81,7 +76,6 @@ export default function FooterSection() {
           className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 pb-10 md:pb-16 text-left"
         >
           
-          {/* CARD 1: Brand & Socials */}
           <motion.div variants={cardVariants} className="bg-[#111111] hover:bg-[#151515] border border-zinc-800/80 rounded-[1.5rem] p-5 md:p-7 flex flex-col h-full transition-colors duration-300 shadow-xl">
             <h3 className="text-2xl md:text-3xl font-black tracking-tighter mb-3 md:mb-4">
               G-TEC<span className="text-blue-600">.</span>
@@ -90,7 +84,6 @@ export default function FooterSection() {
               Empowering students with industry-standard skills in IT, Accounting, and CAD.
             </p>
             
-            {/* Animated Social Icons */}
             <motion.div 
               variants={iconContainerVariants}
               className="flex flex-wrap gap-2 md:gap-3"
@@ -126,7 +119,6 @@ export default function FooterSection() {
             </motion.div>
           </motion.div>
 
-          {/* CARD 2: Navigation (Now with animated list items) */}
           <motion.div variants={cardVariants} className="bg-[#111111] hover:bg-[#151515] border border-zinc-800/80 rounded-[1.5rem] p-5 md:p-7 flex flex-col h-full transition-colors duration-300 shadow-xl">
             <h4 className="text-sm md:text-lg font-bold mb-4 md:mb-6 text-white border-b border-zinc-800 pb-2">Navigation</h4>
             <motion.ul 
@@ -141,7 +133,6 @@ export default function FooterSection() {
             </motion.ul>
           </motion.div>
 
-          {/* CARD 3: Contact Details (Now with animated list items) */}
           <motion.div variants={cardVariants} className="bg-[#111111] hover:bg-[#151515] border border-zinc-800/80 rounded-[1.5rem] p-5 md:p-7 flex flex-col h-full transition-colors duration-300 shadow-xl">
             <h4 className="text-sm md:text-lg font-bold mb-4 md:mb-6 text-white border-b border-zinc-800 pb-2">Contact Info</h4>
             <motion.ul 
@@ -170,7 +161,6 @@ export default function FooterSection() {
             </motion.ul>
           </motion.div>
 
-          {/* CARD 4: Address (Now with animated item) */}
           <motion.div variants={cardVariants} className="bg-[#111111] hover:bg-[#151515] border border-zinc-800/80 rounded-[1.5rem] p-5 md:p-7 flex flex-col h-full transition-colors duration-300 shadow-xl">
             <h4 className="text-sm md:text-lg font-bold mb-4 md:mb-6 text-white border-b border-zinc-800 pb-2">Campus</h4>
             <motion.div 
@@ -192,7 +182,6 @@ export default function FooterSection() {
 
         </motion.div>
 
-        {/* Bottom Copyright Bar */}
         <motion.div 
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

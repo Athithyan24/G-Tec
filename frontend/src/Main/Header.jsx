@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Info, Phone, Users, MapPin, BookOpen, MessageCircleQuestionMark, ChevronDown, LayoutGrid, User, Settings, LogOut, Menu, X } from "lucide-react";
+import { Info, Phone, Users, MapPin, BookOpen, MessageCircleQuestionMark, ChevronDown, LayoutGrid, User, Settings, LogOut, Menu, X, Gamepad2, Trophy } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function HeaderSection() {
@@ -7,7 +7,7 @@ export default function HeaderSection() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
   
-  // NEW: State to control the mobile menu
+  // State to control the mobile menu
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export default function HeaderSection() {
   const handleLogout = () => {
     localStorage.removeItem("adminToken");
     localStorage.removeItem("adminUser");
-    window.location.href = "/";
+    window.location.href = "/"; // Redirect to home
   };
 
   const courseCategories = [
@@ -34,7 +34,6 @@ export default function HeaderSection() {
       const currentScrollY = window.scrollY;
       if (currentScrollY > lastScrollY && currentScrollY > 50) {
         setIsVisible(false);
-        // Close mobile menu if user starts scrolling down
         setIsMobileMenuOpen(false); 
       } else {
         setIsVisible(true);
@@ -45,7 +44,6 @@ export default function HeaderSection() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
-  // Prevent scrolling when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -57,11 +55,11 @@ export default function HeaderSection() {
   return (
     <>
       <header
-        className={`fixed w-full top-0 z-[100] bg-blue-900/95 backdrop-blur-md border-b border-white/10 transition-transform duration-500 ease-in-out ${
+        className={`fixed w-full top-0 z-100 bg-blue-900/95 backdrop-blur-md border-b border-white/10 transition-transform duration-500 ease-in-out ${
           isVisible ? "translate-y-0" : "-translate-y-full"
         }`}
       >
-        <div className="max-w-[1450px] mx-auto px-4 lg:px-8 h-28 flex items-center justify-between">
+        <div className="max-w-362.5 mx-auto px-4 lg:px-8 h-28 flex items-center justify-between">
           
           {/* Logo Section - Preserved exactly as requested */}
           <Link to="/" className="flex items-center gap-3 cursor-pointer shrink-0" onClick={() => setIsMobileMenuOpen(false)}>
@@ -78,7 +76,7 @@ export default function HeaderSection() {
             </div>
           </Link>
 
-          {/* Desktop Navigation (Hidden on Mobile) */}
+          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-4 xl:gap-7 whitespace-nowrap">
             <div className="relative group flex items-center h-28">
               <Link 
@@ -115,35 +113,56 @@ export default function HeaderSection() {
               </div>
             </div>
 
+            {/* FIXED ADMIN SECTION: Collapsed into a single modern Dropdown */}
             {isAdmin && (
-              <div className="flex items-center gap-4 xl:gap-6 border-x border-white/10 px-4 xl:px-6">
-                <div className="relative group flex items-center h-28">
-                  <button className="flex items-center gap-1.5 text-[15px] xl:text-[16px] font-bold text-yellow-400 hover:text-yellow-300 whitespace-nowrap cursor-pointer transition-colors">
-                    <Users size={18} /> 
-                    Students
-                    <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
-                  </button>
-                  <div className="absolute top-[80%] left-0 w-[260px] bg-white rounded-2xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 overflow-hidden z-[110]">
-                    <div className="p-2 flex flex-col gap-1">
-                      <Link to="/admin/enrollment-log" className="group/item flex flex-col p-3 rounded-xl hover:bg-blue-50 transition-colors">
-                        <span className="text-sm font-bold text-gray-900 group-hover/item:text-blue-600 transition-colors">Enrollment Log</span>
-                        <span className="text-[10px] font-medium text-gray-400 mt-0.5 leading-tight">Master database of all applications</span>
-                      </Link>
-                      <Link to="/admin/students" className="group/item flex flex-col p-3 rounded-xl hover:bg-yellow-50 transition-colors">
-                        <span className="text-sm font-bold text-gray-900 group-hover/item:text-yellow-600 transition-colors">Manage Students</span>
-                        <span className="text-[10px] font-medium text-gray-400 mt-0.5 leading-tight">Active workspace to edit records</span>
-                      </Link>
-                    </div>
+              <div className="relative group flex items-center h-28 border-x border-white/10 px-4 xl:px-6">
+                <button className="flex items-center gap-1.5 text-[15px] xl:text-[16px] font-bold text-yellow-400 hover:text-yellow-300 whitespace-nowrap cursor-pointer transition-colors">
+                  <Settings size={18} /> 
+                  Admin Panel
+                  <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
+                </button>
+                
+                {/* Admin Dropdown Menu */}
+                <div className="absolute top-[80%] left-1/2 -translate-x-1/2 w-[280px] bg-white rounded-b-2xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-0 overflow-hidden z-[110]">
+                  <div className="p-2 flex flex-col gap-1">
+                    <Link to="/admin/enrollment-log" className="group/item flex flex-col p-3 rounded-xl hover:bg-blue-50 transition-colors">
+                      <span className="flex items-center gap-2 text-sm font-bold text-gray-900 group-hover/item:text-blue-600 transition-colors">
+                        <BookOpen size={16} /> Enrollment Log
+                      </span>
+                      <span className="text-[10px] font-medium text-gray-400 mt-0.5 ml-6 leading-tight">Master database of all applications</span>
+                    </Link>
+                    
+                    <Link to="/admin/students" className="group/item flex flex-col p-3 rounded-xl hover:bg-yellow-50 transition-colors">
+                      <span className="flex items-center gap-2 text-sm font-bold text-gray-900 group-hover/item:text-yellow-600 transition-colors">
+                        <Users size={16} /> Manage Students
+                      </span>
+                      <span className="text-[10px] font-medium text-gray-400 mt-0.5 ml-6 leading-tight">Active workspace to edit records</span>
+                    </Link>
+                    
+                    <div className="border-t border-gray-100 my-1"></div>
+                    
+                    <Link to="/admin/courses" className="group/item flex items-center gap-2 p-3 rounded-xl hover:bg-green-50 transition-colors">
+                      <LayoutGrid size={16} className="text-gray-900 group-hover/item:text-green-600 transition-colors" />
+                      <span className="text-sm font-bold text-gray-900 group-hover/item:text-green-600 transition-colors">Web Updater</span>
+                    </Link>
+                    
+                    <Link to="/admin/enquiry" className="group/item flex items-center gap-2 p-3 rounded-xl hover:bg-purple-50 transition-colors">
+                      <MessageCircleQuestionMark size={16} className="text-gray-900 group-hover/item:text-purple-600 transition-colors" />
+                      <span className="text-sm font-bold text-gray-900 group-hover/item:text-purple-600 transition-colors">Enquiry Inbox</span>
+                    </Link>
+
+                    <Link to="/admin/decoder" className="group/item flex items-center gap-2 p-3 rounded-xl hover:bg-orange-50 transition-colors">
+                      <Gamepad2 size={16} className="text-gray-900 group-hover/item:text-orange-600 transition-colors" />
+                      <span className="text-sm font-bold text-gray-900 group-hover/item:text-orange-600 transition-colors">Coupon Decoder</span>
+                    </Link>
+
+                    {/* NEW GAME CONTESTANTS LINK */}
+                    <Link to="/admin/contestants" className="group/item flex items-center gap-2 p-3 rounded-xl hover:bg-rose-50 transition-colors">
+                      <Trophy size={16} className="text-gray-900 group-hover/item:text-rose-600 transition-colors" />
+                      <span className="text-sm font-bold text-gray-900 group-hover/item:text-rose-600 transition-colors">Game Contestants</span>
+                    </Link>
                   </div>
                 </div>
-
-                <Link to="/admin/courses" className="flex items-center gap-1.5 text-[15px] xl:text-[16px] font-bold text-yellow-400 hover:text-yellow-300 whitespace-nowrap transition-colors">
-                  <Settings size={18} /> Manage
-                </Link>
-                
-                <Link to="/admin/enquiry" className="flex items-center gap-1.5 text-[15px] xl:text-[16px] font-bold text-yellow-400 hover:text-yellow-300 whitespace-nowrap transition-colors">
-                  <MessageCircleQuestionMark size={18} /> Enquiry
-                </Link>
               </div>
             )}
             
@@ -156,17 +175,18 @@ export default function HeaderSection() {
             </Link>
           </nav>
 
-          {/* Desktop Right Action Buttons (Hidden on Mobile) */}
+          {/* Desktop Right Action Buttons */}
           <div className="hidden lg:flex items-center gap-4 xl:gap-6 shrink-0">
+
             {isAdmin ? (
               <button 
                 onClick={handleLogout}
-                className="flex items-center gap-2 bg-red-500/10 text-red-500 px-5 py-2.5 rounded-full text-[15px] font-bold border border-red-500/20 hover:bg-red-500 hover:text-white transition-all"
+                className="flex items-center gap-2 bg-red-500/10 text-red-500 px-5 py-2.5 rounded-full text-[15px] font-bold border border-red-500/20 hover:bg-red-500 hover:text-white transition-all whitespace-nowrap"
               >
                 <LogOut size={16}/> Logout
               </button>
             ) : (
-              <Link to="/login" className="flex items-center gap-2 text-[15px] xl:text-[16px] font-bold text-white hover:text-blue-300 transition-colors">
+              <Link to="/login" className="flex items-center gap-2 text-[15px] xl:text-[16px] font-bold text-white hover:text-blue-300 transition-colors whitespace-nowrap">
                 <User size={20} /> Login
               </Link>
             )}
@@ -182,7 +202,7 @@ export default function HeaderSection() {
             </Link>
           </div>
 
-          {/* NEW: Mobile Hamburger Menu Toggle */}
+          {/* Mobile Hamburger Menu Toggle */}
           <button 
             className="lg:hidden text-white p-2 hover:text-blue-300 transition-colors shrink-0"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -192,7 +212,7 @@ export default function HeaderSection() {
 
         </div>
 
-        {/* NEW: Mobile Dropdown Menu */}
+        {/* Mobile Dropdown Menu */}
         <div 
           className={`lg:hidden absolute top-28 left-0 w-full bg-blue-900/98 backdrop-blur-xl border-t border-white/10 transition-all duration-300 ease-in-out shadow-2xl ${
             isMobileMenuOpen ? "max-h-[85vh] opacity-100 visible overflow-y-auto" : "max-h-0 opacity-0 invisible overflow-hidden"
@@ -200,7 +220,6 @@ export default function HeaderSection() {
         >
           <div className="flex flex-col p-6 gap-6">
             
-            {/* Standard Links */}
             <Link to="/courses" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-semibold text-white">
               <LayoutGrid size={22} className="text-blue-300" /> Courses
             </Link>
@@ -213,27 +232,35 @@ export default function HeaderSection() {
               <Phone size={22} className="text-blue-300" /> Contact
             </Link>
 
-            {/* Admin Links */}
             {isAdmin && (
               <div className="flex flex-col gap-5 pt-5 border-t border-white/10">
                 <span className="text-xs font-bold text-yellow-400 uppercase tracking-wider">Admin Panel</span>
                 <Link to="/admin/enrollment-log" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-semibold text-white">
-                  <Users size={22} className="text-yellow-400" /> Enrollment Log
+                  <BookOpen size={22} className="text-yellow-400" /> Enrollment Log
                 </Link>
                 <Link to="/admin/students" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-semibold text-white">
                   <Users size={22} className="text-yellow-400" /> Manage Students
                 </Link>
                 <Link to="/admin/courses" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-semibold text-white">
-                  <Settings size={22} className="text-yellow-400" /> Manage Courses
+                  <LayoutGrid size={22} className="text-yellow-400" /> Web Updater
                 </Link>
                 <Link to="/admin/enquiry" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-semibold text-white">
                   <MessageCircleQuestionMark size={22} className="text-yellow-400" /> Enquiry
+                </Link>
+                <Link to="/admin/decoder" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-semibold text-white">
+                  <Gamepad2 size={22} className="text-yellow-400" /> Coupon Decoder
+                </Link>
+                
+                {/* NEW GAME CONTESTANTS LINK MOBILE */}
+                <Link to="/admin/contestants" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 text-lg font-semibold text-white">
+                  <Trophy size={22} className="text-yellow-400" /> Game Contestants
                 </Link>
               </div>
             )}
 
             {/* Mobile Action Buttons */}
             <div className="flex flex-col gap-4 mt-2 pt-6 border-t border-white/10">
+
               {isAdmin ? (
                 <button 
                   onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}

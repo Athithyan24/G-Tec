@@ -7,7 +7,6 @@ import {
 import { useEffect } from "react";
 import "./App.css";
 
-// Import your components
 import HeaderSection from "./Main/Header";
 import HomeSection from "./HomeComponents/HomeSection";
 import FooterSection from "./Main/Footer";
@@ -16,19 +15,24 @@ import AboutSection from "./AboutUsComponents/Aboutus";
 import Course from "./Course/Course"
 import ContactUs from "./ContactUs/ContactUs";
 import Chatbot from "./Chatbot/Chatbot";
+import GameLauncherWidget from "./GameSection/GameLauncherWidget";
 
-// 1. IMPORT YOUR NEW COURSE COMPONENT HERE
-// Make sure the file path matches where you saved it!
 import CourseItTechnical from "./CoursesSection/CourseItTechnical";
 import CourseItNonTechnical from "./CoursesSection/CourseItNonTechnical";
 import CourseDesigning from "./CoursesSection/CourseDesigning";
 import CourseAccounting from "./CoursesSection/CourseAccounting";
 import CourseCivil from "./CoursesSection/CourseCivil";
+
 import LoginPage from "./LoginPage";
 import StudentsTab from "./StudentsDetails/StudentsTab";
 import StudentsEnrollment from "./StudentsDetails/StudentsEnrollment";
 import WebUpdater from "./StudentsDetails/WebUpdater";
-import EnquiryTab from "./Enrollment/EnquiryTab"
+import ScoreListener from "./Score/ScoreListener";
+import EnquiryTab from "./Enrollment/EnquiryTab";
+
+
+import NeonStrikeGame from "./GameSection/NeonStrikeGame"; 
+import AdminCouponDecoder from "./GameSection/AdminCouponDecoder";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -48,28 +52,33 @@ function App() {
       <HeaderSection />
 
       <Routes>
+        <Route path="/game" element={<NeonStrikeGame />} />
+        
         <Route path="/" element={<HomeSection />} />
+
         <Route path="/about" element={<AboutSection />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/courses" element={<Course />} />
 
-        {/* The path MUST match the path defined in your Header courseCategories array */}
         <Route path="/courses/it-technical" element={<CourseItTechnical />} />
-        <Route
-          path="/courses/it-non-technical"
-          element={<CourseItNonTechnical />}
-        />
+        <Route path="/courses/it-non-technical" element={<CourseItNonTechnical />} />
         <Route path="/courses/designing" element={<CourseDesigning />} />
         <Route path="/courses/accounting" element={<CourseAccounting />} />
         <Route path="/courses/civil" element={<CourseCivil />} />
+        
         <Route path="/enroll" element={<EnrollmentForm />} />
         <Route path="/login" element={<LoginPage />} />
+
         <Route path="/admin/students" element={<StudentsTab />} />
-        <Route path="/admin/enrolled-log" element={<StudentsEnrollment />} />
+        <Route path="/admin/enrollment-log" element={<StudentsEnrollment />} />
         <Route path="/admin/courses" element={<WebUpdater />} />
         <Route path="/admin/enquiry" element={<EnquiryTab />} />
+        <Route path="/admin/contestants" element={<ScoreListener />} />
+        <Route path="/admin/decoder" element={<AdminCouponDecoder />} />
       </Routes>
+      
       <Chatbot />
+      <GameLauncherWidget />
       <FooterSection />
     </Router>
   );
