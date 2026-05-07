@@ -91,7 +91,7 @@ export default function Chatbot() {
   return (
     <>
       <motion.div
-        className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end pointer-events-auto"
+        className="fixed bottom-6 right-6 z-9999 flex flex-col items-end pointer-events-auto"
         animate={{ y: -offsetY }}
         transition={{ type: "spring", stiffness: 600, damping: 50 }}
       >

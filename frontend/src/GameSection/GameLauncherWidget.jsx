@@ -82,19 +82,54 @@ export default function GameLauncherWidget() {
       </AnimatePresence>
 
       <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => navigate("/game")}
-        className="w-16 h-16 bg-[#0f172a] rounded-full border border-cyan-500/30 shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center relative group overflow-hidden"
-      >
-        {/* Subtle luxurious glow instead of childish pinging */}
-        <div className="absolute inset-0 rounded-full bg-cyan-500/20 blur-md animate-[pulse_4s_ease-in-out_infinite]"></div>
-        
-        {/* Lottie Animation */}
-        <div className="w-[130%] h-[130%] absolute flex items-center justify-center">
-          <Lottie animationData={gaming} loop={true} />
-        </div>
-      </motion.button>
+  whileHover={{ scale: 1.05 }}
+  whileTap={{ scale: 0.95 }}
+  onClick={() => navigate("/game")}
+  className="w-20 h-30 flex items-center justify-center relative group"
+>
+  {/* The Refractive Glass Ripple */}
+  {[...Array(2)].map((_, i) => (
+    <motion.div
+      key={i}
+      className="absolute rounded-full border border-red-500 backdrop-blur-[2px]"
+      style={{
+        width: "60px",
+        height: "60px",
+      }}
+      initial={{ scale: 1, opacity: 0 }}
+      animate={{
+        scale: [1, 2.8],
+        opacity: [0, 0.4, 0],
+      }}
+      transition={{
+        duration: 4,
+        repeat: Infinity,
+        delay: i * 2,
+        // High-end "Apple-style" easing
+        ease: [0.16, 1, 0.3, 1], 
+      }}
+    />
+  ))}
+
+  {/* Secondary Soft Atmospheric Bloom */}
+  <motion.div
+    className="absolute w-12 h-12 bg-blue-500/10 rounded-full blur-2xl"
+    animate={{
+      scale: [1, 1.5, 1],
+      opacity: [0.3, 0.6, 0.3],
+    }}
+    transition={{
+      duration: 4,
+      repeat: Infinity,
+      ease: "easeInOut",
+    }}
+  />
+
+  {/* Lottie Animation Container */}
+  <div className="w-[130%] h-[130%] relative z-10 flex items-center justify-center pointer-events-none">
+    <Lottie animationData={gaming} loop={true} />
+  </div>
+</motion.button>
     </motion.div>
   );
 }

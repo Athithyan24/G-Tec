@@ -185,6 +185,8 @@ app.get('/api/india/pincode/:pin', async (req, res) => {
   }
 });
 
+{/*---------- Phone number verification section ----------*/}
+
 {/* ---------- Chatbot Section ---------- */}
 
 app.post('/api/chatbot', async (req, res) => {

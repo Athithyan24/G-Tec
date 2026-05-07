@@ -366,21 +366,60 @@ export default function NeonStrikeGame() {
           
           {/* ----- 1. INTRO SCREEN ----- */}
           {gameState === "intro" && (
-            <motion.div key="intro" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, filter: "blur(10px)" }} transition={{ duration: 0.8, ease: smoothEase }} className="text-center px-6 relative z-20">
-              <div className="inline-block p-4 rounded-3xl bg-white/5 border border-white/10 shadow-2xl backdrop-blur-xl mb-8 animate-[float_6s_ease-in-out_infinite]">
-                <BrainCircuit size={80} className="mx-auto text-cyan-400 drop-shadow-[0_0_20px_rgba(34,211,238,0.8)]" />
-              </div>
-              <h1 className="text-5xl md:text-8xl font-black text-white tracking-tight leading-none mb-6">
-                TRIVIA <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 drop-shadow-[0_0_30px_rgba(34,211,238,0.4)]">RACER</span>
-              </h1>
-              <p className="text-indigo-200 text-lg md:text-2xl leading-relaxed mb-10 max-w-2xl mx-auto font-medium">
-                Test your knowledge at warp speed! Answer correctly to win a <strong className="text-white bg-indigo-900/50 px-2 py-1 rounded-md">100% Scholarship!</strong>
-              </p>
-              <button onClick={() => setGameState("form")} className="w-full md:w-auto md:px-16 mx-auto bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black py-5 rounded-full shadow-[0_0_40px_rgba(34,211,238,0.5)] flex items-center justify-center gap-4 text-xl uppercase tracking-widest active:scale-95 transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-[0_0_60px_rgba(34,211,238,0.7)] border border-cyan-300/30">
-                Start Quest <ArrowRight size={24} />
-              </button>
-            </motion.div>
-          )}
+  <motion.div 
+    key="intro" 
+    initial={{ opacity: 0, y: 30 }} 
+    animate={{ opacity: 1, y: 0 }} 
+    exit={{ opacity: 0, filter: "blur(10px)" }} 
+    transition={{ duration: 0.8, ease: smoothEase }} 
+    className="text-center px-6 relative z-20 max-w-4xl mx-auto"
+  >
+    {/* Refined Icon Treatment */}
+    <div className="relative inline-block mb-10">
+      <div className="absolute inset-0 bg-blue-500/20 blur-[40px] rounded-full"></div>
+      <div className="relative p-6 rounded-[2rem] bg-zinc-900 border border-white/10 shadow-2xl">
+        <BrainCircuit size={60} className="text-blue-500" />
+      </div>
+    </div>
+
+    {/* Professional Typography */}
+    <div className="space-y-4 mb-10">
+      <h2 className="text-blue-500 text-sm font-black uppercase tracking-[0.4em]">
+        Academic Evaluation
+      </h2>
+      <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight leading-none">
+        Scholarship <span className="text-zinc-500 italic font-light font-serif">Assessment</span>
+      </h1>
+      <p className="text-zinc-400 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto font-medium">
+        Complete our industry-standard trivia evaluation to qualify for 
+        <span className="text-white"> G-TEC Scholarship Programs</span> up to 100%.
+      </p>
+    </div>
+
+    {/* Action Area */}
+    <div className="flex flex-col items-center gap-6">
+      <button 
+        onClick={() => setGameState("form")} 
+        className="group relative w-full md:w-auto md:px-20 bg-white text-black font-bold py-5 rounded-2xl shadow-xl transition-all duration-300 hover:bg-zinc-200 active:scale-[0.98] flex items-center justify-center gap-4 text-lg uppercase tracking-wider"
+      >
+        Begin Assessment
+        <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+      </button>
+
+      {/* Trust Badge */}
+      <div className="flex items-center gap-4 opacity-50">
+        <div className="flex -space-x-2">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="w-6 h-6 rounded-full border-2 border-zinc-950 bg-zinc-800" />
+          ))}
+        </div>
+        <p className="text-[10px] text-white font-bold uppercase tracking-widest">
+          +2k Students Enrolled this Month
+        </p>
+      </div>
+    </div>
+  </motion.div>
+)}
 
           {/* ----- 2. FORM SCREEN (Buttery Smooth Animation) ----- */}
           {gameState === "form" && (
@@ -685,43 +724,98 @@ export default function NeonStrikeGame() {
 
           {/* ----- 4. RESULT SCREEN ----- */}
           {gameState === "result" && (
-            <motion.div key="result" initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }} animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }} transition={{ duration: 1, ease: smoothEase }} className="text-center px-4 w-full max-w-2xl mx-auto space-y-6 relative z-20">
-              
-              <div className="bg-white/5 backdrop-blur-2xl p-8 md:p-12 rounded-[3rem] border border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.6)] relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500"></div>
-                
-                <Trophy size={80} className="mx-auto text-yellow-400 drop-shadow-[0_0_30px_rgba(250,204,21,0.6)] mb-4" />
-                <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight mb-6">MISSION OVER</h2>
-                
-                <div className="bg-black/40 rounded-3xl p-6 border border-white/10 flex flex-col gap-2 shadow-inner mb-8">
-                  <p className="text-cyan-300 text-lg md:text-xl font-bold">{formData.name}</p>
-                  <div className="w-16 h-1 bg-white/10 mx-auto my-2 rounded-full"></div>
-                  <p className="text-indigo-200 text-sm uppercase tracking-widest font-bold">Final Score</p>
-                  <p className="text-6xl md:text-7xl leading-none font-mono font-black text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]">{score.toLocaleString()}</p>
-                </div>
+  <motion.div 
+    key="result" 
+    initial={{ opacity: 0, y: 30 }} 
+    animate={{ opacity: 1, y: 0 }} 
+    transition={{ duration: 0.7, ease: [0.19, 1, 0.22, 1] }} 
+    className="text-center px-4 w-full max-w-2xl mx-auto relative z-20"
+  >
+    {/* Minimalist Header */}
+    <div className="mb-8">
+      <h2 className="text-white text-sm font-black uppercase tracking-[0.3em] mb-2 opacity-50">
+        Assessment Report
+      </h2>
+      <div className="h-[1px] w-12 bg-blue-500 mx-auto"></div>
+    </div>
 
-                <div className="p-6 md:p-8 bg-gradient-to-br from-indigo-600/30 to-purple-600/30 border border-indigo-400/40 rounded-3xl shadow-[0_0_40px_rgba(79,70,229,0.3)] relative group">
-                  <Sparkles className="absolute top-4 right-4 text-yellow-300 animate-pulse" size={24} />
-                  <p className="text-sm md:text-base text-indigo-200 font-bold uppercase tracking-widest mb-3">
-                    Scholarship Code Unlocked
-                  </p>
-                  <div onClick={copyToClipboard} className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500 font-mono tracking-wider cursor-pointer hover:scale-[1.03] transition-transform duration-500 ease-out py-2 drop-shadow-md">
-                    {couponCode}
-                  </div>
-                  <button onClick={copyToClipboard} className="mt-5 mx-auto flex items-center gap-2 text-sm md:text-base bg-indigo-500 text-white px-8 py-3.5 rounded-full transition-all duration-500 ease-out font-bold uppercase hover:bg-indigo-400 shadow-[0_10px_20px_rgba(79,70,229,0.4)] hover:shadow-[0_15px_30px_rgba(79,70,229,0.6)]">
-                    {copied ? <><CheckCircle2 size={18}/> Copied!</> : <><Copy size={18}/> Copy Code</>}
-                  </button>
-                </div>
+    {/* Main Grid Container */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      
+      {/* 1. Candidate Info Tile */}
+      <div className="bg-zinc-900/50 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-left flex flex-col justify-between">
+        <div>
+          <User size={18} className="text-zinc-500 mb-4" />
+          <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-wider">Candidate</p>
+          <p className="text-xl font-semibold text-white truncate">{formData.name}</p>
+        </div>
+        <div className="mt-4 flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+          <span className="text-[10px] text-emerald-500 font-bold uppercase">Verified Result</span>
+        </div>
+      </div>
 
-                <div className="pt-8 flex flex-col sm:flex-row gap-4">
-                  <button onClick={() => setGameState("form")} className="flex-1 bg-white/10 text-white font-bold uppercase py-4 rounded-2xl transition-all duration-500 ease-out hover:bg-white/20 active:scale-95 border border-white/20 text-lg md:text-xl">Play Again</button>
-                  <button onClick={handleExit} className="flex-1 bg-white text-black font-black uppercase py-4 rounded-2xl transition-all duration-500 ease-out shadow-xl hover:bg-gray-200 flex items-center justify-center gap-3 active:scale-95 text-lg md:text-xl">Exit Console <ArrowRight size={20} /></button>
-                </div>
-              </div>
+      {/* 2. Score Tile */}
+      <div className="bg-zinc-900/50 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-left">
+        <BrainCircuit size={18} className="text-blue-500 mb-4" />
+        <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-wider">Performance Score</p>
+        <p className="text-5xl font-light text-white tabular-nums mt-1">
+          {score.toLocaleString()}
+        </p>
+      </div>
 
-            </motion.div>
-          )}
+      {/* 3. Scholarship Voucher Tile (Full Width) */}
+      <div className="md:col-span-2 bg-white text-black rounded-2xl p-8 relative overflow-hidden group">
+        {/* Decorative pattern for the "Voucher" feel */}
+        <div className="absolute top-0 right-0 p-4 opacity-10">
+          <Sparkles size={80} />
+        </div>
+        
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="text-left">
+            <h3 className="text-xs font-black uppercase tracking-widest text-zinc-400 mb-1">Benefit Unlocked</h3>
+            <p className="text-2xl font-bold leading-tight">Scholarship <br />Grant Voucher</p>
+          </div>
 
+          <div className="flex flex-col items-center md:items-end gap-3">
+            <div 
+              onClick={copyToClipboard}
+              className="text-4xl font-mono font-black tracking-tighter cursor-pointer hover:text-blue-600 transition-colors"
+            >
+              {couponCode}
+            </div>
+            <button 
+              onClick={copyToClipboard}
+              className="flex items-center gap-2 text-[10px] font-black uppercase bg-black text-white px-4 py-2 rounded-lg hover:bg-zinc-800 transition-all active:scale-95"
+            >
+              {copied ? <><CheckCircle2 size={14} /> Copied</> : <><Copy size={14} /> Copy Code</>}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Footer Navigation */}
+    <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6">
+      <button 
+        onClick={() => setGameState("form")}
+        className="text-zinc-400 hover:text-white text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2"
+      >
+        <X size={14} /> Reset Session
+      </button>
+      
+      <div className="hidden sm:block w-px h-4 bg-zinc-800"></div>
+
+      <button 
+        onClick={handleExit}
+        className="group bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-full font-bold transition-all shadow-xl shadow-blue-900/20 flex items-center gap-3 active:scale-95"
+      >
+        Finish & Exit 
+        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+      </button>
+    </div>
+  </motion.div>
+)}
         </AnimatePresence>
       </motion.div>
 
