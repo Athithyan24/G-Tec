@@ -4,7 +4,7 @@ import LottieBase from "lottie-react";
 import gaming from "../assets/Rocket.json"; 
 import gamings from "../assets/gaming.json";
 import { 
-  Trophy, ArrowRight, Sparkles, Copy, CheckCircle2, 
+  Trophy, ArrowRight,ShieldAlert, Sparkles, Copy, CheckCircle2, 
   ChevronLeft, ChevronRight, Heart, Zap, Bomb, 
   User, Phone, BookOpen, BrainCircuit, X, Loader2,
   ChevronDown, AlertCircle, Rocket
@@ -366,61 +366,104 @@ export default function NeonStrikeGame() {
           
           {/* ----- 1. INTRO SCREEN ----- */}
           {gameState === "intro" && (
-  <motion.div 
-    key="intro" 
-    initial={{ opacity: 0, y: 30 }} 
-    animate={{ opacity: 1, y: 0 }} 
-    exit={{ opacity: 0, filter: "blur(10px)" }} 
-    transition={{ duration: 0.8, ease: smoothEase }} 
-    className="text-center px-6 relative z-20 max-w-4xl mx-auto"
-  >
-    {/* Refined Icon Treatment */}
-    <div className="relative inline-block mb-10">
-      <div className="absolute inset-0 bg-blue-500/20 blur-[40px] rounded-full"></div>
-      <div className="relative p-6 rounded-[2rem] bg-zinc-900 border border-white/10 shadow-2xl">
-        <BrainCircuit size={60} className="text-blue-500" />
-      </div>
-    </div>
+  <div className="min-h-screen w-full bg-black flex flex-col items-center justify-center p-4 md:p-10 relative overflow-hidden">
+    
+    {/* LIVE ANIMATED BACKGROUND */}
+    <div className="absolute inset-0 cyber-grid opacity-40 z-0" />
+    <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.15)_0%,transparent_50%)] z-0" />
 
-    {/* Professional Typography */}
-    <div className="space-y-4 mb-10">
-      <h2 className="text-blue-500 text-sm font-black uppercase tracking-[0.4em]">
-        Academic Evaluation
-      </h2>
-      <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight leading-none">
-        Scholarship <span className="text-zinc-500 italic font-light font-serif">Assessment</span>
-      </h1>
-      <p className="text-zinc-400 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto font-medium">
-        Complete our industry-standard trivia evaluation to qualify for 
-        <span className="text-white"> G-TEC Scholarship Programs</span> up to 100%.
-      </p>
-    </div>
-
-    {/* Action Area */}
-    <div className="flex flex-col items-center gap-6">
-      <button 
-        onClick={() => setGameState("form")} 
-        className="group relative w-full md:w-auto md:px-20 bg-white text-black font-bold py-5 rounded-2xl shadow-xl transition-all duration-300 hover:bg-zinc-200 active:scale-[0.98] flex items-center justify-center gap-4 text-lg uppercase tracking-wider"
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.9 }} 
+      animate={{ opacity: 1, scale: 1 }}
+      className="z-10 w-full max-w-7xl flex flex-col lg:flex-row gap-6 items-stretch"
+    >
+      
+      {/* CARD 1: IDENTITY MODULE */}
+      <motion.div 
+        whileHover={{ y: -5, rotateX: 2, rotateY: -2 }}
+        className="flex-1 bg-zinc-900/40 backdrop-blur-2xl border-t-2 border-l-2 border-blue-500/30 p-8 md:p-12 rounded-[2.5rem] shadow-[20px_20px_50px_rgba(0,0,0,0.5)] flex flex-col justify-between overflow-hidden relative group"
       >
-        Begin Assessment
-        <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-      </button>
-
-      {/* Trust Badge */}
-      <div className="flex items-center gap-4 opacity-50">
-        <div className="flex -space-x-2">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="w-6 h-6 rounded-full border-2 border-zinc-950 bg-zinc-800" />
-          ))}
+        <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-100 transition-opacity">
+          <span className="font-mono text-[10px] text-blue-500">SYS_REF: G-TEC_BRAIN_V3</span>
         </div>
-        <p className="text-[10px] text-white font-bold uppercase tracking-widest">
-          +2k Students Enrolled this Month
-        </p>
-      </div>
-    </div>
-  </motion.div>
-)}
 
+        <div className="space-y-6">
+          <motion.div 
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="w-20 h-20 border-2 border-dashed border-blue-500/50 rounded-full flex items-center justify-center"
+          >
+             <BrainCircuit size={40} className="text-blue-500 neon-glow" />
+          </motion.div>
+
+          <div className="space-y-2">
+            <h2 className="text-blue-400 font-mono text-xs tracking-[0.5em] uppercase">Security Clearance: Level 1</h2>
+            <h1 className="text-5xl md:text-7xl font-black text-white leading-tight uppercase tracking-tighter">
+              KNOWLEDGE <br /> <span className="text-blue-500 italic neon-glow">COMMAND</span>
+            </h1>
+          </div>
+        </div>
+
+        <p className="mt-8 text-zinc-500 font-mono text-sm leading-relaxed border-l-2 border-blue-500/50 pl-4">
+          Establish neural handshake. <br />
+          <span className="text-zinc-300">Target: 100% Scholarship Grant Allocation.</span>
+        </p>
+      </motion.div>
+
+      {/* CARD 2: PROTOCOL (DISCLAIMER) MODULE */}
+      <motion.div 
+        initial={{ x: 100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="lg:w-[450px] bg-black/60 backdrop-blur-3xl border border-white/5 p-8 rounded-[2.5rem] shadow-2xl relative flex flex-col justify-between"
+      >
+        {/* Animated Scan Bar */}
+        <motion.div 
+          animate={{ top: ['0%', '100%', '0%'] }} 
+          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+          className="absolute left-0 right-0 h-[2px] bg-blue-500/50 blur-[4px] z-20"
+        />
+
+        <div>
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="text-white font-bold text-xl uppercase tracking-widest flex items-center gap-2">
+              <ShieldAlert className="text-blue-500" /> Directives
+            </h3>
+            <div className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-1 rounded border border-blue-500/20">LIVE_FEED</div>
+          </div>
+
+          <div className="space-y-6">
+            {[
+              { label: "01_LIMIT", text: "One session attempt per verified UID." },
+              { label: "02_TIMER", text: "Sixty-second response window per node." },
+              { label: "03_CRED", text: "Identity verification mandatory for grant." },
+              { label: "04_DATA", text: "System logs IP and attempt metadata." }
+            ].map((item, idx) => (
+              <div key={idx} className="group cursor-default">
+                <p className="text-[10px] text-blue-500 font-mono mb-1">{item.label}</p>
+                <p className="text-zinc-400 text-xs font-medium group-hover:text-white transition-colors">{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-10 space-y-4">
+          <button 
+            onClick={() => setGameState("form")}
+            className="w-full relative group h-16 bg-white rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.1)] active:scale-95 transition-transform"
+          >
+            <div className="absolute inset-0 bg-blue-600 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500" />
+            <span className="relative z-10 text-black group-hover:text-white font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-colors">
+              Initialize System <ArrowRight size={20} />
+            </span>
+          </button>
+          <p className="text-[9px] text-zinc-600 text-center font-mono uppercase tracking-[0.2em]">Authorized Access Only // Port_8080</p>
+        </div>
+      </motion.div>
+
+    </motion.div>
+  </div>
+)}
           {/* ----- 2. FORM SCREEN (Buttery Smooth Animation) ----- */}
           {gameState === "form" && (
             <motion.div 

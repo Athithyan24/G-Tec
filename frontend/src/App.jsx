@@ -29,6 +29,7 @@ import StudentsEnrollment from "./StudentsDetails/StudentsEnrollment";
 import WebUpdater from "./StudentsDetails/WebUpdater";
 import ScoreListener from "./Score/ScoreListener";
 import EnquiryTab from "./Enrollment/EnquiryTab";
+import AdminInquiries from "./ContactUs/ContactUsViewer";
 
 
 import NeonStrikeGame from "./GameSection/NeonStrikeGame"; 
@@ -75,6 +76,7 @@ function App() {
         <Route path="/admin/enquiry" element={<EnquiryTab />} />
         <Route path="/admin/contestants" element={<ScoreListener />} />
         <Route path="/admin/decoder" element={<AdminCouponDecoder />} />
+        <Route path="/admin/contact-us" element={<AdminInquiries />} />
       </Routes>
       
       <Chatbot />

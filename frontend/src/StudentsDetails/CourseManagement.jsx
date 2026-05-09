@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Plus, Trash2, Save, BookOpen, Layers, ImageIcon, FileText, Clock, Tag, AlignLeft, Edit, X, Award } from "lucide-react";
+import { Plus, Trash2, Save, BookOpen, Layers, ImageIcon, FileText, Clock, Tag, AlignLeft, Edit, X, Award, Search } from "lucide-react";
 
 export default function CourseManagement() {
   const [courses, setCourses] = useState([]);
@@ -12,7 +12,8 @@ export default function CourseManagement() {
 
   const [tags, setTags] = useState([""]);
   const [syllabus, setSyllabus] = useState([""]);
-  const [certifications, setCertifications] = useState([""]); // <-- New State
+  const [certifications, setCertifications] = useState([""]);
+  const [dynamicCategories, setDynamicCategories] = useState([]);
 
   const API_BASE = "http://localhost:5000/api";
 
@@ -23,7 +24,13 @@ export default function CourseManagement() {
       .catch(err => console.error(err));
   };
 
-  useEffect(() => { fetchCourses(); }, []);
+  useEffect(() => { 
+    fetchCourses(); 
+    fetch(`${API_BASE}/categories`)
+      .then(res => res.json())
+      .then(data => setDynamicCategories(data))
+      .catch(err => console.error("Failed to fetch categories", err));
+  }, []);
 
   const handleArrayChange = (index, value, setter, array) => {
     const newArray = [...array];
@@ -31,224 +38,226 @@ export default function CourseManagement() {
     setter(newArray);
   };
   const addArrayItem = (setter, array) => setter([...array, ""]);
-  const removeArrayItem = (index, setter, array) => {
-    if (array.length > 1) setter(array.filter((_, i) => i !== index));
-  };
+  const removeArrayItem = (index, setter, array) => setter(array.filter((_, i) => i !== index));
 
-  const resetForm = () => {
-    setEditingId(null);
-    setFormData({ title: "", category: "", shortDesc: "", fullDesc: "", duration: "", image: "" });
-    setTags([""]);
-    setSyllabus([""]);
-    setCertifications([""]); // <-- Reset
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const url = editingId ? `${API_BASE}/courses/${editingId}` : `${API_BASE}/courses`;
+    const method = editingId ? "PUT" : "POST";
+
+    const payload = {
+      ...formData,
+      tags: tags.filter(t => t.trim() !== ""),
+      syllabus: syllabus.filter(s => s.trim() !== ""),
+      certifications: certifications.filter(c => c.trim() !== "")
+    };
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        setEditingId(null);
+        setFormData({ title: "", category: "", shortDesc: "", fullDesc: "", duration: "", image: "" });
+        setTags([""]); setSyllabus([""]); setCertifications([""]);
+        fetchCourses();
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleEditClick = (course) => {
     setEditingId(course._id);
     setFormData({
-      title: course.title, category: course.category, shortDesc: course.shortDesc, 
-      fullDesc: course.fullDesc, duration: course.duration, image: course.image || ""
+      title: course.title, category: course.category || course.categorySlug, 
+      shortDesc: course.shortDesc || "", fullDesc: course.fullDesc || "", 
+      duration: course.duration || "", image: course.image || ""
     });
     setTags(course.tags?.length ? course.tags : [""]);
     setSyllabus(course.syllabus?.length ? course.syllabus : [""]);
-    setCertifications(course.certifications?.length ? course.certifications : [""]); // <-- Populate Edit
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setCertifications(course.certifications?.length ? course.certifications : [""]);
   };
 
   const handleDelete = async (id) => {
-    if(!window.confirm("Are you sure you want to delete this course?")) return;
+    if (!window.confirm("Are you sure you want to delete this course?")) return;
     try {
-      await fetch(`${API_BASE}/courses/${id}`, { method: "DELETE" });
-      if (editingId === id) resetForm(); 
-      fetchCourses();
-    } catch (error) { console.error("Error deleting", error); }
+      const res = await fetch(`${API_BASE}/courses/${id}`, { method: "DELETE" });
+      if (res.ok) setCourses(courses.filter(c => c._id !== id));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const cleanedTags = tags.filter(t => t.trim() !== "");
-    const cleanedSyllabus = syllabus.filter(s => s.trim() !== "");
-    const cleanedCertifications = certifications.filter(c => c.trim() !== ""); // <-- Clean up
+  const filteredCourses = activeFilter === "all" ? courses : courses.filter(c => (c.category || c.categorySlug) === activeFilter);
 
-    if (!formData.title || !formData.category) return alert("Title and Category are required!");
-
-    const coursePayload = { 
-      ...formData, 
-      tags: cleanedTags, 
-      syllabus: cleanedSyllabus,
-      certifications: cleanedCertifications // <-- Add to Payload
-    };
-    
-    const method = editingId ? "PUT" : "POST";
-    const url = editingId ? `${API_BASE}/courses/${editingId}` : `${API_BASE}/courses`;
-
-    try {
-      const response = await fetch(url, {
-        method: method, headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(coursePayload)
-      });
-      const result = await response.json();
-      
-      if (result.success) {
-        alert(editingId ? "Course Updated Successfully!" : "Course Added Successfully!");
-        resetForm();
-        fetchCourses(); 
-      }
-    } catch (error) { console.error("Error saving course", error); }
-  };
-
-  const filteredCourses = activeFilter === "all" ? courses : courses.filter(c => c.category === activeFilter);
-  const categories = [
-    { id: "all", label: "All Courses" },
-    { id: "it-technical", label: "IT Technical" },
-    { id: "it-non-technical", label: "IT Non-Tech" },
-    { id: "designing", label: "Designing" },
-    { id: "accounting", label: "Accounting" },
-    { id: "civil", label: "Civil" }
-  ];
-
-  const inputClass = "w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm font-medium";
-  const labelClass = "text-[11px] font-bold text-gray-500 uppercase flex items-center gap-1.5 mb-1.5 tracking-wider";
+  // Reusable compact input class
+  const inputClass = "w-full border border-gray-200 bg-gray-50/50 p-2 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all";
 
   return (
-    <div className="min-h-screen bg-white p-8 pt-40 pb-30 font-sans">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="w-full font-sans">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        {/* LEFT COLUMN */}
-        <div className="lg:col-span-2 bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden relative">
-          <div className={`${editingId ? "bg-amber-500" : "bg-blue-900"} p-6 text-white flex items-center justify-between transition-colors`}>
-            <div className="flex items-center gap-3">
-              {editingId ? <Edit size={24} /> : <BookOpen size={24} />}
-              <div>
-                <h2 className="text-xl font-bold">{editingId ? "Edit Course" : "Add New Course"}</h2>
-                <p className={`text-xs mt-1 ${editingId ? "text-amber-100" : "text-blue-200"}`}>
-                  {editingId ? "Update existing details" : "Populate your website dynamically"}
-                </p>
-              </div>
-            </div>
+        {/* LEFT COMPACT FORM (Takes up 5 columns out of 12) */}
+        <div className="lg:col-span-5 bg-white p-5 rounded-2xl border border-gray-200 shadow-sm h-fit">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+              {editingId ? <><Edit size={18} className="text-amber-500"/> Edit Course</> : <><Plus size={18} className="text-blue-500"/> Add New Course</>}
+            </h2>
             {editingId && (
-              <button onClick={resetForm} className="bg-amber-600 hover:bg-amber-700 px-4 py-2 rounded-lg text-sm font-bold transition-colors flex items-center gap-1">
-                <X size={16}/> Cancel Edit
-              </button>
+              <button onClick={() => { setEditingId(null); setFormData({title:"", category:"", shortDesc:"", fullDesc:"", duration:"", image:""}); }} className="text-xs font-semibold text-gray-500 hover:text-gray-800 bg-gray-100 px-2 py-1 rounded">Cancel</button>
             )}
           </div>
-
-          <form onSubmit={handleSubmit} className="p-6 space-y-5">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* 2-Column Grid for basics */}
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className={labelClass}><FileText size={14}/> Course Title</label>
-                <input type="text" className={inputClass} placeholder="e.g. Tally Prime with GST" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} required/>
+                <label className="block text-xs font-semibold text-gray-600 mb-1 flex items-center gap-1"><BookOpen size={12}/> Title</label>
+                <input type="text" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className={inputClass} placeholder="Course Title" />
               </div>
               <div>
-                <label className={labelClass}><Layers size={14}/> Category</label>
-                <select className={inputClass} value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} required>
-                  <option value="">Select Category</option>
-                  <option value="it-technical">IT / Technical</option>
-                  <option value="it-non-technical">IT / Non-Technical</option>
-                  <option value="designing">Designing</option>
-                  <option value="accounting">Accounting</option>
-                  <option value="civil">Civil / Architecture</option>
+                <label className="block text-xs font-semibold text-gray-600 mb-1 flex items-center gap-1"><Layers size={12}/> Category</label>
+                <select required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className={inputClass}>
+                  <option value="" disabled>Select...</option>
+                  {dynamicCategories.map(cat => <option key={cat._id} value={cat.slug}>{cat.name}</option>)}
                 </select>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-              <div className="md:col-span-3">
-                <label className={labelClass}><ImageIcon size={14}/> Image URL</label>
-                <input type="url" className={inputClass} placeholder="https://images.unsplash.com/..." value={formData.image} onChange={e => setFormData({...formData, image: e.target.value})} />
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1 flex items-center gap-1"><Clock size={12}/> Duration</label>
+                <input type="text" required value={formData.duration} onChange={e => setFormData({...formData, duration: e.target.value})} className={inputClass} placeholder="e.g. 3 Months" />
               </div>
               <div>
-                <label className={labelClass}><Clock size={14}/> Duration</label>
-                <input type="text" className={inputClass} placeholder="e.g. 3 Months" value={formData.duration} onChange={e => setFormData({...formData, duration: e.target.value})} />
+                <label className="block text-xs font-semibold text-gray-600 mb-1 flex items-center gap-1"><ImageIcon size={12}/> Image URL</label>
+                <input type="text" value={formData.image} onChange={e => setFormData({...formData, image: e.target.value})} className={inputClass} placeholder="https://..." />
               </div>
             </div>
 
             <div>
-              <label className={labelClass}><AlignLeft size={14}/> Short Description</label>
-              <input type="text" className={inputClass} placeholder="Brief one-liner for the card view..." value={formData.shortDesc} onChange={e => setFormData({...formData, shortDesc: e.target.value})} />
-            </div>
-            <div>
-              <label className={labelClass}><AlignLeft size={14}/> Full Description</label>
-              <textarea rows="3" className={`${inputClass} resize-none`} placeholder="Detailed explanation of the course..." value={formData.fullDesc} onChange={e => setFormData({...formData, fullDesc: e.target.value})} />
+              <label className="block text-xs font-semibold text-gray-600 mb-1 flex items-center gap-1"><AlignLeft size={12}/> Short Description</label>
+              <input type="text" required value={formData.shortDesc} onChange={e => setFormData({...formData, shortDesc: e.target.value})} className={inputClass} placeholder="Brief summary..." />
             </div>
 
-            {/* Changed to 3 Columns to fit the Certifications */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-gray-100">
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1 flex items-center gap-1"><FileText size={12}/> Full Description</label>
+              <textarea rows="2" value={formData.fullDesc} onChange={e => setFormData({...formData, fullDesc: e.target.value})} className={`${inputClass} resize-none`} placeholder="Detailed overview..."></textarea>
+            </div>
+
+            {/* Dynamic Arrays in Compact Grid */}
+            <div className="grid grid-cols-1 gap-4 p-3 bg-gray-50 rounded-xl border border-gray-100">
               
+              {/* Syllabus */}
               <div>
-                <label className={labelClass}><Tag size={14}/> Tags</label>
-                {tags.map((tag, i) => (
-                  <div key={i} className="flex gap-2 mb-2">
-                    <input type="text" className={inputClass} placeholder="e.g. GST" value={tag} onChange={(e) => handleArrayChange(i, e.target.value, setTags, tags)} />
-                    <button type="button" onClick={() => removeArrayItem(i, setTags, tags)} className="p-2.5 text-red-500 hover:bg-red-50 rounded-xl transition-colors"><Trash2 size={16}/></button>
-                  </div>
-                ))}
-                <button type="button" onClick={() => addArrayItem(setTags, tags)} className="text-xs font-bold text-blue-600 flex items-center gap-1 mt-1 hover:underline"><Plus size={14}/> Add Tag</button>
+                <label className="text-xs font-bold text-gray-700 flex justify-between items-center mb-1">
+                  <span className="flex items-center gap-1"><BookOpen size={12}/> Syllabus</span>
+                  <button type="button" onClick={() => addArrayItem(setSyllabus, syllabus)} className="text-blue-500 hover:text-blue-700"><Plus size={14}/></button>
+                </label>
+                <div className="space-y-1.5 max-h-24 overflow-y-auto pr-1">
+                  {syllabus.map((item, i) => (
+                    <div key={i} className="flex gap-1">
+                      <input type="text" value={item} onChange={e => handleArrayChange(i, e.target.value, setSyllabus, syllabus)} className="flex-1 border border-gray-200 bg-white p-1 text-xs rounded focus:outline-none" placeholder={`Topic ${i+1}`} />
+                      <button type="button" onClick={() => removeArrayItem(i, setSyllabus, syllabus)} className="text-gray-400 hover:text-red-500"><X size={14}/></button>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <div>
-                <label className={labelClass}><BookOpen size={14}/> Syllabus</label>
-                {syllabus.map((item, i) => (
-                  <div key={i} className="flex gap-2 mb-2">
-                    <input type="text" className={inputClass} placeholder={`Point ${i + 1}`} value={item} onChange={(e) => handleArrayChange(i, e.target.value, setSyllabus, syllabus)} />
-                    <button type="button" onClick={() => removeArrayItem(i, setSyllabus, syllabus)} className="p-2.5 text-red-500 hover:bg-red-50 rounded-xl transition-colors"><Trash2 size={16}/></button>
+              {/* Grid for Tags & Certifications */}
+              <div className="grid grid-cols-2 gap-3">
+                {/* Tags */}
+                <div>
+                  <label className="text-xs font-bold text-gray-700 flex justify-between items-center mb-1">
+                    <span className="flex items-center gap-1"><Tag size={12}/> Tags</span>
+                    <button type="button" onClick={() => addArrayItem(setTags, tags)} className="text-blue-500 hover:text-blue-700"><Plus size={14}/></button>
+                  </label>
+                  <div className="space-y-1.5 max-h-24 overflow-y-auto pr-1">
+                    {tags.map((item, i) => (
+                      <div key={i} className="flex gap-1">
+                        <input type="text" value={item} onChange={e => handleArrayChange(i, e.target.value, setTags, tags)} className="flex-1 border border-gray-200 bg-white p-1 text-xs rounded focus:outline-none" placeholder="e.g. Bestseller" />
+                        <button type="button" onClick={() => removeArrayItem(i, setTags, tags)} className="text-gray-400 hover:text-red-500"><X size={14}/></button>
+                      </div>
+                    ))}
                   </div>
-                ))}
-                <button type="button" onClick={() => addArrayItem(setSyllabus, syllabus)} className="text-xs font-bold text-blue-600 flex items-center gap-1 mt-1 hover:underline"><Plus size={14}/> Add Point</button>
-              </div>
+                </div>
 
-              {/* NEW CERTIFICATIONS BLOCK */}
-              <div>
-                <label className={labelClass}><Award size={14}/> Certifications</label>
-                {certifications.map((item, i) => (
-                  <div key={i} className="flex gap-2 mb-2">
-                    <input type="text" className={inputClass} placeholder={`Cert ${i + 1}`} value={item} onChange={(e) => handleArrayChange(i, e.target.value, setCertifications, certifications)} />
-                    <button type="button" onClick={() => removeArrayItem(i, setCertifications, certifications)} className="p-2.5 text-red-500 hover:bg-red-50 rounded-xl transition-colors"><Trash2 size={16}/></button>
+                {/* Certifications */}
+                <div>
+                  <label className="text-xs font-bold text-gray-700 flex justify-between items-center mb-1">
+                    <span className="flex items-center gap-1"><Award size={12}/> Certs</span>
+                    <button type="button" onClick={() => addArrayItem(setCertifications, certifications)} className="text-blue-500 hover:text-blue-700"><Plus size={14}/></button>
+                  </label>
+                  <div className="space-y-1.5 max-h-24 overflow-y-auto pr-1">
+                    {certifications.map((item, i) => (
+                      <div key={i} className="flex gap-1">
+                        <input type="text" value={item} onChange={e => handleArrayChange(i, e.target.value, setCertifications, certifications)} className="flex-1 border border-gray-200 bg-white p-1 text-xs rounded focus:outline-none" placeholder="e.g. ISO 9001" />
+                        <button type="button" onClick={() => removeArrayItem(i, setCertifications, certifications)} className="text-gray-400 hover:text-red-500"><X size={14}/></button>
+                      </div>
+                    ))}
                   </div>
-                ))}
-                <button type="button" onClick={() => addArrayItem(setCertifications, certifications)} className="text-xs font-bold text-blue-600 flex items-center gap-1 mt-1 hover:underline"><Plus size={14}/> Add Cert</button>
+                </div>
               </div>
 
             </div>
 
-            <button type="submit" className={`w-full py-4 text-white rounded-xl font-bold flex justify-center items-center gap-2 transition-all shadow-md mt-4 ${editingId ? "bg-amber-500 hover:bg-amber-600" : "bg-blue-600 hover:bg-blue-700"}`}>
-              <Save size={18} /> {editingId ? "Update Course in Database" : "Save Course to Database"}
+            <button type="submit" className={`w-full text-white font-bold py-2.5 rounded-lg transition-colors flex justify-center items-center gap-2 text-sm ${editingId ? 'bg-amber-500 hover:bg-amber-600' : 'bg-blue-600 hover:bg-blue-700'}`}>
+              <Save size={16} /> {editingId ? "Update Course" : "Save Course"}
             </button>
           </form>
         </div>
 
-        {/* RIGHT COLUMN */}
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden h-[fit-content] max-h-[85vh] flex flex-col">
-          <div className="bg-gray-50 border-b border-gray-100 p-5 pb-4">
-            <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">
-              Manage Courses ({filteredCourses.length})
+        {/* RIGHT SLEEK LIST (Takes up 7 columns) */}
+        <div className="lg:col-span-7 flex flex-col gap-4">
+          
+          {/* Header & Filter Row */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white p-3 rounded-xl border border-gray-200 shadow-sm">
+            <h2 className="text-sm font-bold text-gray-800 flex items-center gap-2">
+              <Search size={16} className="text-gray-400"/> Course Inventory ({courses.length})
             </h2>
-            <div className="flex flex-wrap gap-2">
-              {categories.map(cat => (
-                <button key={cat.id} onClick={() => setActiveFilter(cat.id)} className={`text-[10px] px-2.5 py-1.5 rounded-lg font-bold border transition-colors ${activeFilter === cat.id ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-500 border-gray-200 hover:bg-gray-100"}`}>
-                  {cat.label}
+            <div className="flex gap-1 overflow-x-auto w-full sm:w-auto pb-5 sm:pb-1 scrollbar-hide">
+              <button onClick={() => setActiveFilter("all")} className={`px-3 py-3 text-xs font-bold rounded-md whitespace-nowrap transition-colors ${activeFilter === "all" ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>All</button>
+              {dynamicCategories.map(cat => (
+                <button key={cat._id} onClick={() => setActiveFilter(cat.slug)} className={`px-3 py-1 text-xs font-bold rounded-md whitespace-nowrap transition-colors ${activeFilter === cat.slug ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
+                  {cat.name}
                 </button>
               ))}
             </div>
           </div>
-          
-          <div className="p-4 overflow-y-auto custom-scrollbar flex-1 space-y-3">
+
+          {/* Compact Course Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[600px] overflow-y-auto pr-1">
             {filteredCourses.length === 0 ? (
-              <p className="text-center text-sm text-gray-400 py-10">No courses found.</p>
+              <p className="text-sm text-gray-500 col-span-2 text-center py-10 bg-white rounded-xl border border-dashed border-gray-200">No courses found in this category.</p>
             ) : (
               filteredCourses.map(course => (
-                <div key={course._id} className="p-4 rounded-2xl border border-gray-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all group relative pr-16">
-                  <span className="text-[9px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded uppercase mb-2 inline-block">
-                    {course.category.replace('-', ' ')}
-                  </span>
-                  <h3 className="font-bold text-gray-800 leading-tight">{course.title}</h3>
-                  <p className="text-xs text-gray-500 mt-1 flex items-center gap-1"><Clock size={10}/> {course.duration}</p>
+                <div key={course._id} className="bg-white p-3 rounded-xl border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all group relative pr-10 flex flex-col justify-between h-full">
+                  <div>
+                    <span className="text-[9px] font-black bg-blue-50 text-blue-600 px-2 py-0.5 rounded uppercase mb-1.5 inline-block">
+                      {(course.category || course.categorySlug || "UNCATEGORIZED").replace('-', ' ')}
+                    </span>
+                    <h3 className="font-bold text-gray-900 text-sm leading-tight line-clamp-2">{course.title}</h3>
+                    <p className="text-[11px] text-gray-500 mt-1 line-clamp-2">{course.shortDesc}</p>
+                  </div>
                   
-                  <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={() => handleEditClick(course)} className="text-gray-300 hover:text-amber-500 transition-colors bg-white p-1.5 rounded-md shadow-sm border border-gray-100">
+                  <div className="mt-3 flex items-center justify-between pt-2 border-t border-gray-50">
+                    <span className="text-[11px] font-semibold text-gray-600 flex items-center gap-1 bg-gray-50 px-1.5 py-0.5 rounded">
+                      <Clock size={10}/> {course.duration}
+                    </span>
+                    <span className="text-[10px] text-gray-400 font-medium">
+                      {course.syllabus?.length || 0} Topics
+                    </span>
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="absolute top-3 right-2 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => handleEditClick(course)} className="text-gray-400 hover:text-amber-500 hover:bg-amber-50 transition-colors p-1.5 rounded-lg border border-transparent hover:border-amber-100">
                       <Edit size={14} />
                     </button>
-                    <button onClick={() => handleDelete(course._id)} className="text-gray-300 hover:text-red-500 transition-colors bg-white p-1.5 rounded-md shadow-sm border border-gray-100">
+                    <button onClick={() => handleDelete(course._id)} className="text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors p-1.5 rounded-lg border border-transparent hover:border-red-100">
                       <Trash2 size={14} />
                     </button>
                   </div>
@@ -256,6 +265,7 @@ export default function CourseManagement() {
               ))
             )}
           </div>
+
         </div>
       </div>
     </div>

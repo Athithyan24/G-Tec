@@ -24,6 +24,7 @@ const apiLimiter = rateLimit({
 app.use('/api/', apiLimiter);
 
 const MONGO_URI = 'mongodb://127.0.0.1:27017/gtec_database';
+const BACKEND_URL = process.env.BACKEND_URL;
 const nodemailer = require('nodemailer');
 const EMAIL_USER=process.env.EMAIL_USER;
 const EMAIL_PASSWORD=process.env.EMAIL_PASSWORD;
@@ -120,6 +121,27 @@ const gameScoreSchema = new mongoose.Schema({
 
 const GameScore = mongoose.model('GameScore', gameScoreSchema);
 
+const contactSchema = new mongoose.Schema({
+  firstName: { type: String, required: true },
+  lastName: { type: String },
+  email: { type: String, required: true },
+  countryCode: { type: String },
+  phone: { type: String },
+  message: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+  status: { type: String, default: 'Unread' }
+});
+
+const ContactInquiry = mongoose.model('ContactInquiry', contactSchema);
+
+const categorySchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  slug: { type: String, required: true, unique: true },
+  description: { type: String },
+  createdAt: { type: Date, default: Date.now }
+});
+const Category = mongoose.model('Category', categorySchema);
+
 // 1. Get All Countries
 app.get('/api/countries', (req, res) => {
   const countries = Country.getAllCountries().map(c => ({
@@ -185,7 +207,55 @@ app.get('/api/india/pincode/:pin', async (req, res) => {
   }
 });
 
-{/*---------- Phone number verification section ----------*/}
+{/*---------- Course Category verification section ----------*/}
+
+app.post('/api/categories', async (req, res) => {
+  try {
+    const { name, slug, description } = req.body;
+    const newCategory = new Category({ name, slug, description });
+    await newCategory.save();
+    res.json({ success: true, message: "Category created!", data: newCategory });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 2. Fetch all Categories
+app.get('/api/categories', async (req, res) => {
+  try {
+    const categories = await Category.find();
+    res.json(categories);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch categories" });
+  }
+});
+
+//3. Update Category
+
+app.put('/api/categories/:id', async (req, res) => {
+  try {
+    const { name, slug, description } = req.body;
+    await Category.findByIdAndUpdate(
+      req.params.id, 
+      { name, slug, description }, 
+      { new: true }
+    );
+    res.json({ success: true, message: "Category updated successfully!" });
+  } catch (err) {
+    console.error("Update Category Error:", err);
+    res.status(500).json({ success: false, error: "Failed to update category" });
+  }
+});
+
+// 4. Delete Category
+app.delete('/api/categories/:id', async (req, res) => {
+  try {
+    await Category.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: "Category deleted" });
+  } catch (err) {
+    res.status(500).json({ success: false, error: "Failed to delete" });
+  }
+});
 
 {/* ---------- Chatbot Section ---------- */}
 
@@ -283,40 +353,130 @@ app.get('/api/gamescores/all', async (req, res) => {
 
 {/*------------------ MailSection ---------------*/}
 
+// ✅ 1. TRACKING PIXEL ROUTE (Marks inquiry as 'Read' when email is opened)
+app.get('/api/contact-inquiries/:id/track-read', async (req, res) => {
+  try {
+    // Update the database status to 'Read'
+    await ContactInquiry.findByIdAndUpdate(req.params.id, { status: 'Read' });
+    
+    // Return a 1x1 transparent GIF so the email doesn't show a broken image box
+    const transparentGif = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64');
+    res.writeHead(200, {
+      'Content-Type': 'image/gif',
+      'Content-Length': transparentGif.length
+    });
+    res.end(transparentGif);
+  } catch (err) {
+    console.error("Tracking Pixel Error:", err);
+    res.status(500).send('Error');
+  }
+});
+
+// ✅ 2. NEW CONTACT POST ROUTE (Saves to DB & Sends Tracked Email)
 app.post('/api/contact', async (req, res) => {
   const { firstName, lastName, email, countryCode, phone, message } = req.body;
 
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: EMAIL_USER, 
-      pass: EMAIL_PASSWORD  
-    }
-  });
-
-  const mailOptions = {
-    from: `"${firstName} ${lastName}" <${email}>`,
-    to: 'athithyan.802319@sxcce.edu.in', // Where you want to receive the leads
-    subject: `New G-TEC Inquiry from ${firstName}`,
-    html: `
-      <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee;">
-        <h2 style="color: #2563eb;">New Student Inquiry</h2>
-        <p><strong>Name:</strong> ${firstName} ${lastName}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${countryCode} ${phone}</p>
-        <hr />
-        <p><strong>Message:</strong></p>
-        <p>${message}</p>
-      </div>
-    `
-  };
-
   try {
+    // A. Save to Database first to generate the _id
+    const newInquiry = new ContactInquiry({
+      firstName,
+      lastName,
+      email,
+      countryCode,
+      phone,
+      message
+    });
+    await newInquiry.save();
+
+    // B. Setup Nodemailer
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: EMAIL_USER, 
+        pass: EMAIL_PASSWORD  
+      }
+    });
+
+    const formattedPhone = `${countryCode} ${phone}`;
+    
+    // ⚠️ IMPORTANT: Change this to your live server URL once deployed!
+    // E.g., 'https://api.yourdomain.com'
+    const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000'; 
+    const trackingPixelUrl = `${BACKEND_URL}/api/contact-inquiries/${newInquiry._id}/track-read`;
+
+    const mailOptions = {
+      from: `"G-TEC Portal" <${EMAIL_USER}>`, 
+      replyTo: email, 
+      to: EMAIL_USER,
+      subject: `🔔 New Lead: ${firstName} ${lastName}`,
+      html: `
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9fafb; padding: 40px 20px; border-radius: 12px;">
+          <div style="background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid #2563eb;">
+            
+            <h2 style="margin-top: 0; color: #111827; font-size: 24px;">New Student Inquiry</h2>
+            <p style="color: #4b5563; font-size: 16px; line-height: 1.5;">You have received a new contact request from the website. The details have been securely logged in your database.</p>
+            
+            <div style="background-color: #f3f4f6; border-radius: 6px; padding: 20px; margin: 25px 0;">
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 8px 0; color: #6b7280; font-weight: 600; width: 100px;">Name:</td>
+                  <td style="padding: 8px 0; color: #111827; font-weight: bold;">${firstName} ${lastName}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #6b7280; font-weight: 600;">Email:</td>
+                  <td style="padding: 8px 0; font-weight: bold;">
+                    <a href="mailto:${email}" style="color: #2563eb; text-decoration: none;">${email}</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #6b7280; font-weight: 600;">Phone:</td>
+                  <td style="padding: 8px 0; font-weight: bold;">
+                    <a href="tel:${formattedPhone.replace(/\s+/g, '')}" style="color: #111827; text-decoration: none;">${formattedPhone}</a>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <h3 style="color: #374151; font-size: 16px; margin-bottom: 10px;">Student's Message:</h3>
+            <div style="background-color: #ffffff; border-left: 4px solid #e5e7eb; padding: 15px 20px; margin-bottom: 20px; color: #4b5563; font-style: italic; line-height: 1.6;">
+              "${message}"
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+              <a href="mailto:${email}" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">Reply to Student</a>
+            </div>
+
+          </div>
+          
+          <div style="text-align: center; margin-top: 20px; color: #9ca3af; font-size: 12px;">
+            <p>This is an automated alert from the G-TEC Database System.</p>
+            <p>Logged at: ${new Date().toLocaleString()}</p>
+          </div>
+        </div>
+
+        <img src="${trackingPixelUrl}" width="1" height="1" style="display:none;" alt="" />
+      `
+    };
+
+    // C. Send Email
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ success: true, message: 'Email sent successfully!' });
+    
+    res.status(200).json({ success: true, message: 'Inquiry securely saved and email dispatched.' });
+
   } catch (error) {
-    console.error('Nodemailer Error:', error);
-    res.status(500).json({ success: false, message: 'Failed to send email.' });
+    console.error('Contact Submission Error:', error);
+    res.status(500).json({ success: false, message: 'Failed to process the inquiry.' });
+  }
+});
+
+// ✅ 3. GET ROUTE (Fetch all inquiries for Admin Dashboard)
+app.get('/api/contact-inquiries', async (req, res) => {
+  try {
+    const inquiries = await ContactInquiry.find().sort({ createdAt: -1 });
+    res.json({ success: true, data: inquiries });
+  } catch (err) {
+    console.error("Fetch Inquiries Error:", err);
+    res.status(500).json({ success: false, error: "Failed to fetch inquiries." });
   }
 });
 

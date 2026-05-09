@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Info, Phone, Users, MapPin, BookOpen, MessageCircleQuestionMark, ChevronDown, LayoutGrid, User, Settings, LogOut, Menu, X, Gamepad2, Trophy } from "lucide-react";
+import { Info, Phone, Users, MapPin, BookOpen, MessageCircleQuestionMark, ChevronDown, LayoutGrid, 
+  User, Settings, LogOut, Menu, X, Gamepad2, Trophy, MessageSquareDot } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function HeaderSection() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [courseCategories, setCourseCategories] = useState([]);
   
   // State to control the mobile menu
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -21,13 +23,6 @@ export default function HeaderSection() {
     window.location.href = "/"; // Redirect to home
   };
 
-  const courseCategories = [
-    { name: "IT / Technical", desc: "Programming, Software & Web Dev", path: "/courses/it-technical" },
-    { name: "IT / Non-Technical", desc: "Digital Marketing, Office Auto", path: "/courses/it-non-technical" },
-    { name: "Designing", desc: "UI/UX, Graphic & Multimedia", path: "/courses/designing" },
-    { name: "Accounting", desc: "SAP, Tally Prime, GST & More", path: "/courses/accounting" },
-    { name: "Civil", desc: "AutoCAD, 2D/3D Max, Revit", path: "/courses/civil" },
-  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,6 +46,17 @@ export default function HeaderSection() {
       document.body.style.overflow = "unset";
     }
   }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+  const token = localStorage.getItem("adminToken");
+  setIsAdmin(!!token);
+
+  // 2. Fetch categories from your backend
+  fetch("http://localhost:5000/api/categories")
+    .then(res => res.json())
+    .then(data => setCourseCategories(data))
+    .catch(err => console.error("Failed to fetch categories for header", err));
+}, []);
 
   return (
     <>
@@ -79,39 +85,39 @@ export default function HeaderSection() {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-4 xl:gap-7 whitespace-nowrap">
             <div className="relative group flex items-center h-28">
-              <Link 
-                to="/courses" 
-                className="flex items-center gap-1.5 text-[15px] xl:text-[16px] font-semibold text-white hover:text-blue-300 transition-colors cursor-pointer"
-              >
-                <LayoutGrid size={18} />
-                Courses
-                <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
-              </Link>
+  <Link 
+    to="/courses" 
+    className="flex items-center gap-1.5 text-[15px] xl:text-[16px] font-semibold text-white hover:text-blue-300 transition-colors cursor-pointer"
+  >
+    <LayoutGrid size={18} />
+    Courses
+    <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
+  </Link>
 
-              <div className="absolute top-[80%] left-1/2 -translate-x-1/2 w-[320px] bg-white rounded-b-2xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-0 overflow-hidden z-[100]">
-                <div className="p-3 flex flex-col">
-                  {courseCategories.map((category, index) => (
-                    <Link
-                      key={index}
-                      to={category.path}
-                      className="group/item flex flex-col p-3 rounded-xl hover:bg-blue-50 transition-colors"
-                    >
-                      <span className="text-sm font-bold text-gray-900 group-hover/item:text-blue-600 transition-colors">
-                        {category.name}
-                      </span>
-                      <span className="text-xs font-medium text-gray-500 mt-0.5">
-                        {category.desc}
-                      </span>
-                    </Link>
-                  ))}
-                  <div className="mt-2 pt-2 border-t border-gray-50">
-                    <Link to="/courses" className="text-center block py-2 text-[10px] font-bold text-blue-600 hover:text-blue-800 uppercase tracking-wider">
-                      View All Course Categories
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
+  {/* Dynamic Dropdown Menu (Matched to Admin Style) */}
+  <div className="absolute top-[80%] left-1/2 -translate-x-1/2 w-[280px] bg-white rounded-b-2xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-0 overflow-hidden z-[110]">
+    <div className="p-2 flex flex-col gap-1">
+      {courseCategories.length > 0 ? (
+        courseCategories.map((category) => (
+          <Link 
+            key={category._id} 
+            to={`/courses/${category.slug}`} 
+            className="group/item flex flex-col p-3 rounded-xl hover:bg-blue-50 transition-colors"
+          >
+            <span className="flex items-center gap-2 text-sm font-bold text-gray-900 group-hover/item:text-blue-600 transition-colors">
+              <BookOpen size={16} /> {category.name}
+            </span>
+            <span className="text-[10px] font-medium text-gray-400 mt-0.5 ml-6 leading-tight">
+              {category.description}
+            </span>
+          </Link>
+        ))
+      ) : (
+        <p className="text-gray-400 text-xs font-medium p-3 text-center">Loading categories...</p>
+      )}
+    </div>
+  </div>
+</div>
 
             {/* FIXED ADMIN SECTION: Collapsed into a single modern Dropdown */}
             {isAdmin && (
@@ -123,7 +129,7 @@ export default function HeaderSection() {
                 </button>
                 
                 {/* Admin Dropdown Menu */}
-                <div className="absolute top-[80%] left-1/2 -translate-x-1/2 w-[280px] bg-white rounded-b-2xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-0 overflow-hidden z-[110]">
+                <div className="absolute top-[80%] left-1/2 -translate-x-1/2 w-[280px] bg-white rounded-b-2xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-0 overflow-hidden z-110">
                   <div className="p-2 flex flex-col gap-1">
                     <Link to="/admin/enrollment-log" className="group/item flex flex-col p-3 rounded-xl hover:bg-blue-50 transition-colors">
                       <span className="flex items-center gap-2 text-sm font-bold text-gray-900 group-hover/item:text-blue-600 transition-colors">
@@ -140,6 +146,11 @@ export default function HeaderSection() {
                     </Link>
                     
                     <div className="border-t border-gray-100 my-1"></div>
+
+                    <Link to="/admin/contact-us" className="group/item flex items-center gap-2 p-3 rounded-xl hover:bg-green-50 transition-colors">
+                      <MessageSquareDot size={16} className="text-gray-900 group-hover/item:text-pink-600 transition-colors" />
+                      <span className="text-sm font-bold text-gray-900 group-hover/item:text-pink-600 transition-colors">ContactUs Box</span>
+                    </Link>
                     
                     <Link to="/admin/courses" className="group/item flex items-center gap-2 p-3 rounded-xl hover:bg-green-50 transition-colors">
                       <LayoutGrid size={16} className="text-gray-900 group-hover/item:text-green-600 transition-colors" />
@@ -179,12 +190,20 @@ export default function HeaderSection() {
           <div className="hidden lg:flex items-center gap-4 xl:gap-6 shrink-0">
 
             {isAdmin ? (
-              <button 
-                onClick={handleLogout}
-                className="flex items-center gap-2 bg-red-500/10 text-red-500 px-5 py-2.5 rounded-full text-[15px] font-bold border border-red-500/20 hover:bg-red-500 hover:text-white transition-all whitespace-nowrap"
-              >
-                <LogOut size={16}/> Logout
-              </button>
+              <button
+  onClick={handleLogout}
+  className="group relative flex items-center justify-start w-[50px] h-[50px] border-none rounded-full cursor-pointer overflow-hidden transition-all duration-400 shadow-[2px_2px_10px_rgba(0,0,0,0.2)] bg-gradient-to-r from-[#3498db] to-[#e74c3c] hover:w-[150px] hover:rounded-[20px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+>
+  {/* The Sign (Icon Container) */}
+  <div className="flex items-center justify-center w-full transition-all duration-400 group-hover:w-[30%] group-hover:pl-3">
+    <LogOut size={17} className="text-white" />
+  </div>
+
+  {/* The Text */}
+  <div className="absolute right-0 opacity-0 text-[#ecf0f1] text-[1.2em] font-semibold transition-all duration-400 group-hover:opacity-100 group-hover:w-[70%] group-hover:pr-2 whitespace-nowrap">
+    Logout
+  </div>
+</button>
             ) : (
               <Link to="/login" className="flex items-center gap-2 text-[15px] xl:text-[16px] font-bold text-white hover:text-blue-300 transition-colors whitespace-nowrap">
                 <User size={20} /> Login

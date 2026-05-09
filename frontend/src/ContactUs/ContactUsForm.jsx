@@ -87,17 +87,23 @@ const [countries, setCountries] = useState([]);
     const data = await response.json();
 
     if (data.success) {
-      setStatusMessage("Message sent successfully! We will get back to you soon.");
-      // Optional: Clear the form
+      setStatusMessage("✅ Success! Your message has been sent.");
+      // Reset the form on success
       setFormData({
-        firstName: "", lastName: "", email: "", countryCode: "+91", phone: "", message: "", agreedToPolicy: false,
+        firstName: "",
+        lastName: "",
+        email: "",
+        countryCode: "+91",
+        phone: "",
+        message: "",
+        agreedToPolicy: false,
       });
     } else {
-      setStatusMessage("Failed to send message. Please try again.");
+      setStatusMessage("❌ Error: " + data.error);
     }
   } catch (error) {
-    console.error("Error submitting form:", error);
-    setStatusMessage("An error occurred. Please check your connection.");
+    console.error("Submission Error:", error);
+    setStatusMessage("❌ Server unreachable. Please try again later.");
   } finally {
     setIsSubmitting(false);
   }
