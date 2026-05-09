@@ -137,9 +137,13 @@ const ContactInquiry = mongoose.model('ContactInquiry', contactSchema);
 const categorySchema = new mongoose.Schema({
   name: { type: String, required: true },
   slug: { type: String, required: true, unique: true },
-  description: { type: String },
+  description: { type: String }, 
+  explorerDescription: { type: String }, 
+  headline: { type: String },
+  image: { type: String },
   createdAt: { type: Date, default: Date.now }
 });
+
 const Category = mongoose.model('Category', categorySchema);
 
 // 1. Get All Countries
@@ -209,10 +213,11 @@ app.get('/api/india/pincode/:pin', async (req, res) => {
 
 {/*---------- Course Category verification section ----------*/}
 
+// REPLACE your current POST route with this:
 app.post('/api/categories', async (req, res) => {
   try {
-    const { name, slug, description } = req.body;
-    const newCategory = new Category({ name, slug, description });
+    const { name, slug, description, explorerDescription, headline, image } = req.body; 
+    const newCategory = new Category({ name, slug, description, explorerDescription, headline, image });
     await newCategory.save();
     res.json({ success: true, message: "Category created!", data: newCategory });
   } catch (err) {
@@ -234,15 +239,14 @@ app.get('/api/categories', async (req, res) => {
 
 app.put('/api/categories/:id', async (req, res) => {
   try {
-    const { name, slug, description } = req.body;
+    const { name, slug, description, explorerDescription, headline, image } = req.body;
     await Category.findByIdAndUpdate(
       req.params.id, 
-      { name, slug, description }, 
+      { name, slug, description, explorerDescription, headline, image }, 
       { new: true }
     );
     res.json({ success: true, message: "Category updated successfully!" });
   } catch (err) {
-    console.error("Update Category Error:", err);
     res.status(500).json({ success: false, error: "Failed to update category" });
   }
 });

@@ -16,12 +16,8 @@ import Course from "./Course/Course"
 import ContactUs from "./ContactUs/ContactUs";
 import Chatbot from "./Chatbot/Chatbot";
 import GameLauncherWidget from "./GameSection/GameLauncherWidget";
+import CourseCategoryPage from "./CoursesSection/CourseCategoryPage";
 
-import CourseItTechnical from "./CoursesSection/CourseItTechnical";
-import CourseItNonTechnical from "./CoursesSection/CourseItNonTechnical";
-import CourseDesigning from "./CoursesSection/CourseDesigning";
-import CourseAccounting from "./CoursesSection/CourseAccounting";
-import CourseCivil from "./CoursesSection/CourseCivil";
 
 import LoginPage from "./LoginPage";
 import StudentsTab from "./StudentsDetails/StudentsTab";
@@ -61,11 +57,7 @@ function App() {
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/courses" element={<Course />} />
 
-        <Route path="/courses/it-technical" element={<CourseItTechnical />} />
-        <Route path="/courses/it-non-technical" element={<CourseItNonTechnical />} />
-        <Route path="/courses/designing" element={<CourseDesigning />} />
-        <Route path="/courses/accounting" element={<CourseAccounting />} />
-        <Route path="/courses/civil" element={<CourseCivil />} />
+        <Route path="/courses/:categorySlug" element={<CourseCategoryPage />} />
         
         <Route path="/enroll" element={<EnrollmentForm />} />
         <Route path="/login" element={<LoginPage />} />

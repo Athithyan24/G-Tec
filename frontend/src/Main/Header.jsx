@@ -48,15 +48,25 @@ export default function HeaderSection() {
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
-  const token = localStorage.getItem("adminToken");
-  setIsAdmin(!!token);
+    const token = localStorage.getItem("adminToken");
+    setIsAdmin(!!token);
 
-  // 2. Fetch categories from your backend
-  fetch("http://localhost:5000/api/categories")
-    .then(res => res.json())
-    .then(data => setCourseCategories(data))
-    .catch(err => console.error("Failed to fetch categories for header", err));
-}, []);
+    // 2. Fetch categories from your backend
+    fetch("http://localhost:5000/api/categories")
+      .then(res => res.json())
+      .then(data => {
+        // ✅ SAFETY CHECK: Only save it if it's an actual array list
+        if (Array.isArray(data)) {
+          setCourseCategories(data);
+        } else {
+          setCourseCategories([]); // Prevent .map crashes
+        }
+      })
+      .catch(err => {
+        console.error("Failed to fetch categories for header", err);
+        setCourseCategories([]); // Fallback to empty array on error
+      });
+  }, []);
 
   return (
     <>
